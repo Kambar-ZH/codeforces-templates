@@ -1,5 +1,5 @@
 {
-	"Print to console": {
+	"Apply snippet": {
 		"prefix": "anime",
 		"body": [
 			"#include <bits/stdc++.h>",
@@ -101,6 +101,6 @@
 			"    return 0;",
 			"}"
 		],
-		"description": "Log output to console"
+		"description": "Apply snippet"
 	}
 }
