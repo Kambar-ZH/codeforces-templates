@@ -76,11 +76,10 @@ struct DSU {
     int n, cnt;
     vt<int> par, sz;
     DSU(int n) {
-        par.resize(n);
-        iota(all(par), 0);
-        sz.resize(n);
-        cnt = 1;
         this->n = n;
+        cnt = 1;
+        par = vt<int> (n); iota(all(par), 0);
+        sz = vt<int> (n, 1);
     }
     int find(int v) {
         if (par[v] == v) {
@@ -88,9 +87,12 @@ struct DSU {
         }
         return par[v] = find(par[v]);
     }
-    void merge(int v, int u) {
+    bool merge(int v, int u) {
         v = find(v);
         u = find(u);
+        if (u == v) {
+            return false;
+        }
         cnt++;
         if (sz[v] > sz[u]) {
             par[u] = v;
@@ -99,6 +101,7 @@ struct DSU {
             par[v] = u;
             sz[v] +=sz[u];
         }
+        return true;
     }
     bool connected() {
         return cnt == n;

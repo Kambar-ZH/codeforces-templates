@@ -53,7 +53,6 @@ int timer = 0;
 vt<int> tin(N), tout(N);
 vt<int> par(N);
 
-
 void dfs(int v, int p, vt<vt<int> > & g) {
     if (p != -1) {
         par[v] = p;
