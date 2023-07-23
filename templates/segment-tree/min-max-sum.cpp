@@ -54,6 +54,10 @@ struct seg_tree {
 		n = _a.size(), a = _a;
 		tree.resize(4 * n);
 	}
+
+	int sum(int a, int b) {
+		return a + b;
+	}
  
 	void _build(int x, int l, int r) {
 		if (l == r) {
@@ -63,7 +67,7 @@ struct seg_tree {
 		int m = (l + r) >> 1;
 		_build(ls(x), l, m);
 		_build(rs(x), m + 1, r);
-		tree[x] = tree[ls(x)] + tree[rs(x)];
+		tree[x] = min(tree[ls(x)], tree[rs(x)]);
 	}
  
 	void build() {
@@ -80,7 +84,7 @@ struct seg_tree {
 		int mx = (lx + rx) >> 1;
 		int left_subtree = _min_query(ls(x), lx, mx, l, r);
 		int right_subtree = _min_query(rs(x), mx + 1, rx, l, r);
-		return left_subtree + right_subtree;
+		return min(left_subtree, right_subtree);
 	}
  
 	int min_query(int l, int r) {
@@ -98,7 +102,7 @@ struct seg_tree {
 		int mx = (lx + rx) >> 1;
 		_update(ls(x), lx, mx, l, r, v);
 		_update(rs(x), mx + 1, rx, l, r, v);
-		tree[x] = tree[ls(x)] + tree[rs(x)];
+		tree[x] = min(tree[ls(x)], tree[rs(x)]);
 	}
 
     void update(int l, int v) {
