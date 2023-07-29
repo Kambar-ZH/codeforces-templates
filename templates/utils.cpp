@@ -99,6 +99,7 @@ int main()
     freopen("output.txt", "w", stdout);
     freopen("input.txt", "r", stdin);
 #endif
+    srand( time(NULL) );
     int T;
     T = 1;
     precalc();
