@@ -90,6 +90,18 @@ vt<vt<T> > transpose(vt<vt<T> > b) {
 	return c;
 }
 
+template<typename T>
+vt<vt<vt<T> > > generate_permutations(vt<vt<T> > b) {
+	vt<vt<T> > init = b;
+    vt<vt<vt<T> > > perms;
+    while (true) {
+        next_permutation(all(b));
+        perms.push_back(b);
+        if (b == init) break;
+    }
+    return perms;
+}
+
 void solve()
 {
     int n; cin >> n;
