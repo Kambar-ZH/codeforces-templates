@@ -82,6 +82,14 @@ vt<T> unique(vt<T> vec) {
     return vec;
 } 
 
+template<typename T>
+vt<vt<T> > transpose(vt<vt<T> > b) {
+	int n = b.size(), m = b[0].size();
+	vt<vt<T> > c(m, vt<T> (n));
+	For(i, m) For(j, n) c[i][j] = b[j][i];
+	return c;
+}
+
 void solve()
 {
     int n; cin >> n;
