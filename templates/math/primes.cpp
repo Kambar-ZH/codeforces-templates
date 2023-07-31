@@ -122,6 +122,19 @@ vt<int> factorize(int n) {
     return primes;
 }
 
+vt<int> get_divisors(int n) {
+    vt<int> divs;
+    for (int d = 2; d * d <= n; d++) {
+        if (n % d == 0) {
+            divs.push_back(d);
+            if (d * d != n) {
+                divs.push_back(n / d);
+            }
+        }
+    }
+    return divs;
+}
+
 // THE SOLUTION IS ALWAYS SIMPLE
 // THE CODE IS ALWAYS SHORT
 
