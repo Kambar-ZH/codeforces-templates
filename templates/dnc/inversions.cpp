@@ -38,44 +38,54 @@ void read2(vt<vt<T> > & a) {
     For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
 
-ll cnt = 0;
- 
-void merge_sort(int l, int r, vt<int> & a) {
-	if (l >= r) {
-		return;
-	}
-	int m = (l + r) / 2;
-	merge_sort(l, m, a);
-	merge_sort(m + 1, r, a);
- 
-	int l2 = l, m2 = m + 1;
-	vt<int> b;
- 
-	while (l2 <= m && m2 <= r) {
-		if (a[l2] < a[m2]) {
-			b.push_back(a[l2]); 
-			l2++;
-		} else {
-			b.push_back(a[m2]); 
-			cnt += m - l2 + 1;
-			m2++;
-		}
-	}
-	
-	while (l2 <= m) {
-		b.push_back(a[l2]);
-		l2++;
-	}
-	
-	while (m2 <= r) {
-		b.push_back(a[m2]);
-		m2++;
-	}
- 
-	for (int i = l; i <= r; i++) {
-		a[i] = b[i - l];
-	}
-}
+struct sorter {
+    ll inv_cnt = 0;
+    vt<int> a;
+    sorter(vt<int> _a) {
+        a = _a;
+    }
+    
+    void merge_sort(int l, int r) {
+        if (l >= r) {
+            return;
+        }
+        int m = (l + r) / 2;
+        merge_sort(l, m);
+        merge_sort(m + 1, r);
+    
+        int l2 = l, m2 = m + 1;
+        vt<int> b;
+    
+        while (l2 <= m && m2 <= r) {
+            if (a[l2] <= a[m2]) { // be caarefull with this value, for not unique values
+                b.push_back(a[l2]); 
+                l2++;
+            } else {
+                b.push_back(a[m2]); 
+                inv_cnt += m - l2 + 1;
+                m2++;
+            }
+        }
+        
+        while (l2 <= m) {
+            b.push_back(a[l2]);
+            l2++;
+        }
+        
+        while (m2 <= r) {
+            b.push_back(a[m2]);
+            m2++;
+        }
+    
+        for (int i = l; i <= r; i++) {
+            a[i] = b[i - l];
+        }
+    }
+
+    ll get_inv_cnt() {
+        return inv_cnt;
+    }
+};
 
 void solve()
 {
