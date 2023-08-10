@@ -82,6 +82,26 @@ vt<T> unique(vt<T> vec) {
     return vec;
 } 
 
+template<typename T>
+vt<vt<T> > transpose(vt<vt<T> > b) {
+	int n = b.size(), m = b[0].size();
+	vt<vt<T> > c(m, vt<T> (n));
+	For(i, m) For(j, n) c[i][j] = b[j][i];
+	return c;
+}
+
+template<typename T>
+vt<vt<vt<T> > > generate_permutations(vt<vt<T> > b) {
+	vt<vt<T> > init = b;
+    vt<vt<vt<T> > > perms;
+    while (true) {
+        next_permutation(all(b));
+        perms.push_back(b);
+        if (b == init) break;
+    }
+    return perms;
+}
+
 void solve()
 {
     int n; cin >> n;
@@ -99,6 +119,7 @@ int main()
     freopen("output.txt", "w", stdout);
     freopen("input.txt", "r", stdin);
 #endif
+    srand( time(NULL) );
     int T;
     T = 1;
     precalc();
