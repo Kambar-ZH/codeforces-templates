@@ -18,8 +18,7 @@ using namespace std;
 #define ls(x)               x+x+1
 #define rs(x)               x+x+2
  
- 
-const int MAX = 1e9;
+
 const int MOD = 1e9 + 7;
 const int BINT = 32;
 const int BLONG = 64;
@@ -46,7 +45,10 @@ template<typename T>
 void read2(vt<vt<T> > & a) {
 	For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
+
+enum Get_pol { SUM, MIN, MAX };
  
+template <Get_pol get_pol>
 struct seg_tree {
 	int n;
 	vt<int> a, tree;
@@ -67,28 +69,46 @@ struct seg_tree {
 		int m = (l + r) >> 1;
 		_build(ls(x), l, m);
 		_build(rs(x), m + 1, r);
-		tree[x] = min(tree[ls(x)], tree[rs(x)]);
+		if constexpr (get_pol == MIN) {
+            tree[x] = min(tree[ls(x)], tree[rs(x)]);
+        } else if constexpr (get_pol == MAX) {
+            tree[x] = max(tree[ls(x)], tree[rs(x)]);
+		} else {
+            tree[x] = sum(tree[ls(x)], tree[rs(x)]);
+		}
 	}
  
 	void build() {
 		_build(0, 0, n - 1);
 	}
  
-	int _min_query(int x, int lx, int rx, int l, int r) {
+	int _get_query(int x, int lx, int rx, int l, int r) {
 		if (r < lx || rx < l) {
-			return MAX;
+			if constexpr (get_pol == MIN) {
+            	return INT_MAX;
+			} else if constexpr (get_pol == MAX) {
+				return -INT_MAX;
+			} else {
+				return 0;
+			}
 		}
 		if (l <= lx && rx <= r) {
 			return tree[x];
 		}
 		int mx = (lx + rx) >> 1;
-		int left_subtree = _min_query(ls(x), lx, mx, l, r);
-		int right_subtree = _min_query(rs(x), mx + 1, rx, l, r);
-		return min(left_subtree, right_subtree);
+		int left_subtree = _get_query(ls(x), lx, mx, l, r);
+		int right_subtree = _get_query(rs(x), mx + 1, rx, l, r);
+		if constexpr (get_pol == MIN) {
+            return min(left_subtree, right_subtree);
+        } else if constexpr (get_pol == MAX) {
+            return max(left_subtree, right_subtree);
+		} else {
+            return sum(left_subtree, right_subtree);
+		}
 	}
  
-	int min_query(int l, int r) {
-		return _min_query(0, 0, n - 1, l, r);
+	int get_query(int l, int r) {
+		return _get_query(0, 0, n - 1, l, r);
 	}
 
 	void _update(int x, int lx, int rx, int l, int r, int v) {
@@ -102,7 +122,13 @@ struct seg_tree {
 		int mx = (lx + rx) >> 1;
 		_update(ls(x), lx, mx, l, r, v);
 		_update(rs(x), mx + 1, rx, l, r, v);
-		tree[x] = min(tree[ls(x)], tree[rs(x)]);
+		if constexpr (get_pol == MIN) {
+            tree[x] = min(tree[ls(x)], tree[rs(x)]);
+        } else if constexpr (get_pol == MAX) {
+            tree[x] = max(tree[ls(x)], tree[rs(x)]);
+		} else {
+            tree[x] = sum(tree[ls(x)], tree[rs(x)]);
+		}
 	}
 
     void update(int l, int v) {
@@ -114,7 +140,7 @@ void solve()
 {
 	int n; cin >> n;
 	vt<int> a(n); read(a);
-	seg_tree tree = seg_tree(a);
+	seg_tree tree = seg_tree<Get_pol::MIN>(a);
 	tree.build();
 }
  
