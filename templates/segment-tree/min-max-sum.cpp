@@ -46,9 +46,9 @@ void read2(vt<vt<T> > & a) {
 	For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
 
-enum Get_pol { SUM, MIN, MAX };
+enum UPD_POL { SUM, MIN, MAX };
  
-template <Get_pol get_pol>
+template <UPD_POL upd_pol>
 struct seg_tree {
 	int n;
 	vt<int> a, tree;
@@ -69,9 +69,9 @@ struct seg_tree {
 		int m = (l + r) >> 1;
 		_build(ls(x), l, m);
 		_build(rs(x), m + 1, r);
-		if constexpr (get_pol == MIN) {
+		if constexpr (upd_pol == MIN) {
             tree[x] = min(tree[ls(x)], tree[rs(x)]);
-        } else if constexpr (get_pol == MAX) {
+        } else if constexpr (upd_pol == MAX) {
             tree[x] = max(tree[ls(x)], tree[rs(x)]);
 		} else {
             tree[x] = sum(tree[ls(x)], tree[rs(x)]);
@@ -84,9 +84,9 @@ struct seg_tree {
  
 	int _get_query(int x, int lx, int rx, int l, int r) {
 		if (r < lx || rx < l) {
-			if constexpr (get_pol == MIN) {
+			if constexpr (upd_pol == MIN) {
             	return INT_MAX;
-			} else if constexpr (get_pol == MAX) {
+			} else if constexpr (upd_pol == MAX) {
 				return -INT_MAX;
 			} else {
 				return 0;
@@ -98,9 +98,9 @@ struct seg_tree {
 		int mx = (lx + rx) >> 1;
 		int left_subtree = _get_query(ls(x), lx, mx, l, r);
 		int right_subtree = _get_query(rs(x), mx + 1, rx, l, r);
-		if constexpr (get_pol == MIN) {
+		if constexpr (upd_pol == MIN) {
             return min(left_subtree, right_subtree);
-        } else if constexpr (get_pol == MAX) {
+        } else if constexpr (upd_pol == MAX) {
             return max(left_subtree, right_subtree);
 		} else {
             return sum(left_subtree, right_subtree);
@@ -122,9 +122,9 @@ struct seg_tree {
 		int mx = (lx + rx) >> 1;
 		_update(ls(x), lx, mx, l, r, v);
 		_update(rs(x), mx + 1, rx, l, r, v);
-		if constexpr (get_pol == MIN) {
+		if constexpr (upd_pol == MIN) {
             tree[x] = min(tree[ls(x)], tree[rs(x)]);
-        } else if constexpr (get_pol == MAX) {
+        } else if constexpr (upd_pol == MAX) {
             tree[x] = max(tree[ls(x)], tree[rs(x)]);
 		} else {
             tree[x] = sum(tree[ls(x)], tree[rs(x)]);
@@ -140,7 +140,7 @@ void solve()
 {
 	int n; cin >> n;
 	vt<int> a(n); read(a);
-	seg_tree tree = seg_tree<Get_pol::MIN>(a);
+	seg_tree tree = seg_tree<UPD_POL::MIN>(a);
 	tree.build();
 }
  

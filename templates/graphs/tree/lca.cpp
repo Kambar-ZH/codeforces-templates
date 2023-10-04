@@ -46,7 +46,6 @@ sim dor(const c&) { ris; }
 #define imie(...) " [" << #__VA_ARGS__ ": " << (__VA_ARGS__) << "] "
 
 
-const int MAX = 1e9;
 const int MOD = 1e9 + 7;
 const int BINT = 32;
 const int BLONG = 64;
@@ -74,32 +73,46 @@ void read2(vt<vt<T> > & a) {
     For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
 
+enum DP_POL { SUM, MIN, MAX, OR };
+
+template <DP_POL dp_pol>
 struct lca_tree {
     int N, L;
-    vt<int> p, val;
-    vt<vt<int> > dp, dp_min, dp_max;
+    vt<int> par, val;
+    vt<vt<int> > dp_par, dp_val;
     vt<int> in, out;
     int T;
     lca_tree(int _N) {
         N = _N;
         L = log2(N) + 2;
-        p = vt<int> (N, -1);
+        par = vt<int> (N, -1);
         val = vt<int> (N);
-        dp = vt<vt<int> >(N, vt<int> (L, -1));
-        dp_min = vt<vt<int> >(N, vt<int> (L, MAX));
-        dp_max = vt<vt<int> >(N, vt<int> (L, -MAX));
+        depth = vt<int> (N);
+        dp_par = vt<vt<int> >(N, vt<int> (L, -1));
+        if constexpr (dp_pol == MIN) {
+            dp_val = vt<vt<int> >(N, vt<int> (L, INT_MAX));
+        } else if constexpr (dp_pol == MAX) {
+            dp_val = vt<vt<int> >(N, vt<int> (L, -INT_MAX));
+        } else if constexpr (dp_pol == SUM) {
+            dp_val = vt<vt<int> >(N, vt<int> (L, 0));
+        } else if constexpr (dp_pol == OR) {
+            dp_val = vt<vt<int> >(N, vt<int> (L, 0));
+        }
         in = vt<int> (N), out = vt<int> (N);
         T = 0;
     }
 
-    void dfs(int v, int par, int value, vt<vt<pii> > & g) {
+    void dfs(int v, int p, int value, vt<vt<pii> > & g) {
         in[v] = ++T;
-        p[v] = par;
+        par[v] = p;
         val[v] = value;
+        if (p != -1) {
+            depth[v] = depth[p] + 1;
+        }
         for (pii pr : g[v]) {
             int u = pr.first;
             int w = pr.second;
-            if (u == par) continue;
+            if (u == p) continue;
             dfs(u, v, w, g);
         }
         out[v] = T;
@@ -107,18 +120,24 @@ struct lca_tree {
 
     void find_parents() {
         for (int i = 0; i < N; i++) {
-            if (p[i] == -1) continue;
-            dp[i][0] = p[i];
-            dp_max[i][0] = val[i];
-            dp_min[i][0] = val[i];
+            if (par[i] == -1) continue;
+            dp_par[i][0] = par[i];
+            dp_val[i][0] = val[i];
         }
         for (int l = 1; l < L; l++) {
             for (int i = 0; i < N; i++) {
-                int par = dp[i][l - 1];
+                int par = dp_par[i][l - 1];
                 if (par != -1) {
-                    dp[i][l] = dp[par][l - 1];
-                    dp_max[i][l] = max(dp_max[i][l - 1], dp_max[par][l - 1]);
-                    dp_min[i][l] = min(dp_min[i][l - 1], dp_min[par][l - 1]);
+                    dp_par[i][l] = dp_par[par][l - 1];
+                    if constexpr (dp_pol == MIN) {
+                        dp_val[i][l] = min(dp_val[i][l - 1], dp_val[par][l - 1]);
+                    } else if constexpr (dp_pol == MAX) {
+                        dp_val[i][l] = max(dp_val[i][l - 1], dp_val[par][l - 1]);
+                    } else if constexpr (dp_pol == SUM) {
+                        dp_val[i][l] = dp_val[i][l - 1] + dp_val[par][l - 1];
+                    } else if constexpr (dp_pol == OR) {
+                        dp_val[i][l] = dp_val[i][l - 1] | dp_val[par][l - 1];
+                    }
                 }
             }
         }
@@ -136,43 +155,67 @@ struct lca_tree {
             return node2;
         }
         for (int i = L - 1; i >= 0; i--) {
-            int par = dp[node1][i];
+            int par = dp_par[node1][i];
             if (par == -1) continue;
             if (!is_par(node2, par)) {
                 node1 = par;
             }
         }
-        return p[node1];
+        return par[node1];
     }
 
     int ans(int node, int stop) {
-        int mx = -MAX;
+        int val = 0;
+        if constexpr (dp_pol == MIN) {
+            val = INT_MAX;
+        } else if constexpr (dp_pol == MAX) {
+            val = -INT_MAX;
+        } else if constexpr (dp_pol == SUM) {
+            val = 0;
+        } else if constexpr (dp_pol == OR) {
+            val = 0;
+        }
         if (node == stop) {
-            return mx;
+            return val;
         }
         for (int i = L - 1; i >= 0; i--) {
-            int par = dp[node][i];
+            int par = dp_par[node][i];
             if (par == -1) continue;
             if (!is_par(stop, par)) {
-                mx = max(mx, dp_max[node][i]);
+                if constexpr (dp_pol == MIN) {
+                    val = min(val, dp_val[node][i]);
+                } else if constexpr (dp_pol == MAX) {
+                    val = max(val, dp_val[node][i]);
+                } else if constexpr (dp_pol == SUM) {
+                    val = val + dp_val[node][i];
+                } else if constexpr (dp_pol == OR) {
+                    val = val | dp_val[node][i];
+                }
                 node = par;
             }
         }
-        mx = max(mx, dp_max[node][0]);
-        return mx;
+        if constexpr (dp_pol == MIN) {
+            val = min(val, dp_val[node][0]);
+        } else if constexpr (dp_pol == MAX) {
+            val = max(val, dp_val[node][0]);
+        } else if constexpr (dp_pol == SUM) {
+            val = val + dp_val[node][0];
+        } else if constexpr (dp_pol == OR) {
+            val = val | dp_val[node][0];
+        }
+        return val;
     }
 
     void clear(int n) {
         T = 0;
         for (int i = 0; i < n; i++) {
-            p[i] = 0;
+            par[i] = 0;
             val[i] = 0;
             in[i] = 0;
             out[i] = 0;
             for (int l = 0; l < L; l++) {
-                dp[i][l] = -1;
-                dp_min[i][l] = MAX;
-                dp_max[i][l] = -MAX;
+                dp_par[i][l] = -1;
+                dp_val[i][l] = 0;
             }
         }
     }
@@ -187,7 +230,7 @@ void solve()
         g[u].emplace_back(v, w);
         g[v].emplace_back(u, w);
     }
-    lca_tree tree = lca_tree(2e5 + 2e4);
+    lca_tree tree = lca_tree<DP_POL::MIN>(2e5 + 2e4);
     tree.dfs(0, -1, 0, g);
     tree.find_parents();
 }
