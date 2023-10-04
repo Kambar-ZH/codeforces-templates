@@ -80,7 +80,7 @@ struct eratosphen {
     eratosphen(int _N) {
         N = _N;
         is_prime = vt<int> (N, true);
-        last_prime = vt<int> (N);
+        last_prime = vt<int> (N); iota(all(last_prime), 0);
     }
 
     void sieve() {
@@ -95,13 +95,23 @@ struct eratosphen {
         }
     }
 
+    // not including 1
     vt<int> factorize(int n) {
         vt<int> primes;
-        while (last_prime[n] != 0) {
+        while (last_prime[n] != 1) {
             primes.push_back(last_prime[n]);
             n = n / last_prime[n];
         }
-        primes.push_back(n);
+        return primes;
+    }
+
+    // not including 1
+    map<int, int> map_factorize(int n) {
+        map<int, int> primes;
+        while (last_prime[n] != 1) {
+            primes[last_prime[n]] += 1;
+            n = n / last_prime[n];
+        }
         return primes;
     }
 };
