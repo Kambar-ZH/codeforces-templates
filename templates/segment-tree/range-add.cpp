@@ -86,10 +86,10 @@ struct seg_tree {
 	}
  
 	void push(int v) {
-        tree[ls(v)] += lazy[v];
-        lazy[ls(v)] += lazy[v];
-        tree[rs(v)] += lazy[v];
-        lazy[rs(v)] += lazy[v];
+        tree[ls(v)] = (tree[ls(v)] + lazy[v]);
+        lazy[ls(v)] = (lazy[ls(v)] + lazy[v]);
+        tree[rs(v)] = (tree[rs(v)] + lazy[v]);
+        lazy[rs(v)] = (lazy[rs(v)] + lazy[v]);
         lazy[v] = 0;
     }
 
@@ -97,7 +97,6 @@ struct seg_tree {
         if (r < tl || tr < l) {
             return;
         }
-        // debug() << imie(tl) << imie(tr) << imie(l) << imie(r);
         if (l == tl && tr == r) {
             tree[v] += addend;
             lazy[v] += addend;

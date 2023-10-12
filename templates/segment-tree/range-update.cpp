@@ -76,20 +76,22 @@ void read2(vt<vt<T> > & a) {
     For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
 
+const int NEED_PUSH = 0, EMPTY = -1;
+
 struct seg_tree {
 	int n;
 	vt<int> lazy, tree;
 	seg_tree(int n) {
 		this->n = n;
 		tree.resize(4 * n);
-		lazy.resize(4 * n);
+		lazy.resize(4 * n, EMPTY);
 	}
  
 	void push(int v) {
-        if (lazy[v] != -1) {
+        if (lazy[v] == NEED_PUSH) {
             tree[ls(v)] = tree[rs(v)] = tree[v];
-            lazy[ls(v)] = lazy[rs(v)] = 0;
-            lazy[v] = -1;
+            lazy[ls(v)] = lazy[rs(v)] = NEED_PUSH;
+            lazy[v] = EMPTY;
         }
     }
 
@@ -97,10 +99,9 @@ struct seg_tree {
         if (r < tl || tr < l) {
             return;
         }
-        // debug() << imie(tl) << imie(tr) << imie(l) << imie(r);
         if (l == tl && tr == r) {
             tree[v] = color;
-            lazy[v] = 0;
+            lazy[v] = NEED_PUSH;
         } else {
             push(v);
             int tm = (tl + tr) / 2;
