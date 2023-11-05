@@ -129,7 +129,9 @@ int main()
     srand( time(NULL) );
     int T;
     T = 1;
+    clock_t tStart = clock();
     precalc();
     For(t, T) solve();
+    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
     return 0;
 }
