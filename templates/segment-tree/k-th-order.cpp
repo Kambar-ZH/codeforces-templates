@@ -106,7 +106,7 @@ struct seg_tree {
 		return -1;
 	}
  
-	int kth_order(int k) {
+	int kth_order(int k) { // indexed from 1
 		return _kth_order(0, 0, n - 1, k);
 	}
 };

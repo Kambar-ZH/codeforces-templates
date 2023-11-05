@@ -140,7 +140,7 @@ void solve()
 {
 	int n; cin >> n;
 	vt<int> a(n); read(a);
-	seg_tree tree = seg_tree<UPD_POL::MIN>(a);
+	seg_tree<UPD_POL::MIN> tree = seg_tree<UPD_POL::MIN>(a);
 	tree.build();
 }
  
