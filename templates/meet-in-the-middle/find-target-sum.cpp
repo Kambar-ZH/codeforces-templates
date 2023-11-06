@@ -75,7 +75,18 @@ const ld  PI  = 3.14159265358979323846;
 // THE SOLUTION IS ALWAYS SIMPLE
 // THE CODE IS ALWAYS SHORT
 
-pair<bool, vt<bool> > get_sign(vt<int> & a, int target) {
+bool has_bit(int mask, int bit) {
+    return (mask >> bit) == 1;
+}
+
+int get_sign(int mask, int bit) {
+	if (has_bit(mask, bit)) {
+		return 1;
+	}
+	return -1;
+}
+
+pair<bool, vt<int> > get_signs(vt<int> & a, int target) {
 	int n = a.size();
 	
 	vt<int> first_half, second_half;
@@ -91,12 +102,8 @@ pair<bool, vt<bool> > get_sign(vt<int> & a, int target) {
 	unordered_map<int, int> first_half_mp;
 	for (int mask = 0; mask < (1 << first_half.size()); mask++) {
 		int result = 0;
-		for (int b = 0; b < first_half.size(); b++) {
-			if (mask & (1 << b)) {
-				result += first_half[b];
-			} else {
-				result -= first_half[b];
-			}
+		for (int bit = 0; bit < first_half.size(); bit++) {
+			result += get_sign(mask, bit) * first_half[bit];
 		}
 		first_half_mp[result] = mask;
 	}
@@ -104,37 +111,25 @@ pair<bool, vt<bool> > get_sign(vt<int> & a, int target) {
 	unordered_map<int, int> second_half_mp;
 	for (int mask = 0; mask < (1 << second_half.size()); mask++) {
 		int result = 0;
-		for (int b = 0; b < second_half.size(); b++) {
-			if (mask & (1 << b)) {
-				result += second_half[b];
-			} else {
-				result -= second_half[b];
-			}
+		for (int bit = 0; bit < second_half.size(); bit++) {
+			result += get_sign(mask, bit) * second_half[bit];
 		}
 		second_half_mp[result] = mask;
 	}
 	
 	bool found = false;
-	vt<bool> result;
+	vt<int> result;
 	for (auto p : first_half_mp) {
 		int need = target - p.first;
 		if (second_half_mp.count(need)) {
 			found = true;
 			int mask_first = p.second;
 			int mask_second = second_half_mp[need];
-			for (int b = 0; b < first_half.size(); b++) {
-				if (mask_first & (1 << b)) {
-					result.push_back(true);
-				} else {
-					result.push_back(false);
-				}
+			for (int bit = 0; bit < first_half.size(); bit++) {
+				result.push_back(get_sign(mask_first, bit));
 			}
-			for (int b = 0; b < second_half.size(); b++) {
-				if (mask_second & (1 << b)) {
-					result.push_back(true);
-				} else {
-					result.push_back(false);
-				}
+			for (int bit = 0; bit < second_half.size(); bit++) {
+				result.push_back(get_sign(mask_second, bit));
 			}
 			break;
 		} 
@@ -147,7 +142,10 @@ void solve()
 {
     int n, target; cin >> n >> target;
 	vt<int> a(n); read(a);
-	auto signs = get_sign(a, target); // 0 - negative, 1 - positive
+	auto signs = get_signs(a, target);
+	if (signs.first == true) {
+		print(signs.second);
+	}
 }
 
 void precalc() {}

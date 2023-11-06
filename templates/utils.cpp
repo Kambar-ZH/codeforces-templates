@@ -111,10 +111,7 @@ std::ostream& operator<<(std::ostream& o, const __int128& x) {
 
 void solve()
 {
-    int n; cin >> n;
-    vt<ll> a(n); read(a);
-    vt<ll> res = unique(a);
-    print(res);
+    
 }
 
 void precalc() {}

@@ -80,16 +80,17 @@ struct lca_tree {
     int T;
     vt<int> in, out;
 
-    lca_tree(int _N) {
-        N = _N;
-        L = log2(N) + 2;
-        par = vt<int> (N, -1);
-        val = vt<int> (N);
-        depth = vt<int> (N);
-        dp_par = vt<vt<int> >(N, vt<int> (L, -1));
-        dp_val = vt<vt<int> >(N, vt<int> (L, 0));
-        in = vt<int> (N), out = vt<int> (N);
-        T = 0;
+    lca_tree(int N) {
+        this->N      = N;
+        this->L      = log2(N) + 2;
+        this->par    = vt<int> (N, -1);
+        this->val    = vt<int> (N);
+        this->depth  = vt<int> (N);
+        this->dp_par = vt<vt<int> >(N, vt<int> (L, -1));
+        this->dp_val = vt<vt<int> >(N, vt<int> (L, 0));
+        this->in     = vt<int> (N);
+        this->out    = vt<int> (N);
+        this->T      = 0;
     }
 
     void dfs(int v, int p, vt<vt<int> > & g) {

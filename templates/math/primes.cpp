@@ -74,22 +74,24 @@ const ld  PI  = 3.14159265358979323846;
 
 struct eratosphen {
     int N;
-    vt<int> is_prime;
-    vt<int> last_prime;
+    vt<bool> is_prime;
+    vt<int> largest_prime;
     vt<int> primes;
-    eratosphen(int _N) {
-        N = _N;
-        is_prime = vt<int> (N, true);
-        last_prime = vt<int> (N); iota(all(last_prime), 0);
+    eratosphen(int N) {
+        this->N = N;
+        this->is_prime = vt<bool> (N, true);
+        this->largest_prime = vt<int> (N); iota(all(largest_prime), 0);
+        this->sieve();
     }
 
     void sieve() {
         is_prime[0] = is_prime[1] = false;
         for (int i = 2; i * i < N; i++) {
             if (is_prime[i]) {
+                primes.push_back(i);
                 for (int j = i * i; j < N; j += i) {
                     is_prime[j] = false;
-                    last_prime[j] = i;
+                    largest_prime[j] = i;
                 }
             }
         }
@@ -98,9 +100,9 @@ struct eratosphen {
     // not including 1
     vt<int> factorize(int n) {
         vt<int> primes;
-        while (last_prime[n] != 1) {
-            primes.push_back(last_prime[n]);
-            n = n / last_prime[n];
+        while (largest_prime[n] != 1) {
+            primes.push_back(largest_prime[n]);
+            n = n / largest_prime[n];
         }
         return primes;
     }
@@ -108,9 +110,9 @@ struct eratosphen {
     // not including 1
     map<int, int> map_factorize(int n) {
         map<int, int> primes;
-        while (last_prime[n] != 1) {
-            primes[last_prime[n]] += 1;
-            n = n / last_prime[n];
+        while (largest_prime[n] != 1) {
+            primes[largest_prime[n]] += 1;
+            n = n / largest_prime[n];
         }
         return primes;
     }
@@ -152,7 +154,6 @@ void solve()
 {
     int n; cin >> n;
     eratosphen seive = eratosphen(n + 1);
-    seive.sieve();
     vt<int> d1 = factorize(n), d2 = seive.factorize(n);
     print(d1);
     print(d2);

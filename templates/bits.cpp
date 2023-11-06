@@ -85,6 +85,10 @@ int greatest_bit(ll n) {
     return 63 - k;
 }
 
+bool has_bit(int mask, int bit) {
+    return (mask >> bit) == 1;
+}
+
 void solve()
 {
     ll n; cin >> n;
