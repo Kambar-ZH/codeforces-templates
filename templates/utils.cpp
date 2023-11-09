@@ -45,30 +45,16 @@ sim dor(const c&) { ris; }
 #define imie(...) " [" << #__VA_ARGS__ ": " << (__VA_ARGS__) << "] "
 
 template<typename T>
-void read(vt<T> & a) {
-    For(i, a.size()) cin >> a[i];
-}
+void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
 template<typename T>
-void print(vt<T> & a) {
-    For(i, a.size()) cout << a[i] << " ";
-    cout << endl;
-}
+void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
 template<typename T>
-void print2(vt<vt<T> > & a) {
-    For(i, a.size()) {
-        For(j, a[i].size()) cout << a[i][j] << " ";
-        cout << endl;
-    }
-}
+void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
 template<typename T>
-void read2(vt<vt<T> > & a) {
-    For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
-}
+void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
 const int MAX = 1e9;
 const int MOD = 1e9+7;
-const int BINT = 32;
-const int BLONG = 64;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
@@ -91,13 +77,13 @@ vt<vt<T> > transpose(vt<vt<T> > b) {
 }
 
 template<typename T>
-vt<vt<T> > generate_permutations(vt<T> b) {
-	vt<T> init = b;
+vt<vt<T> > generate_permutations(vt<T> a) {
+	vt<T> init = a;
     vt<vt<T> > perms;
     while (true) {
-        next_permutation(all(b));
-        perms.push_back(b);
-        if (b == init) break;
+        next_permutation(all(a));
+        perms.push_back(a);
+        if (a == init) break;
     }
     return perms;
 }
@@ -109,26 +95,20 @@ std::ostream& operator<<(std::ostream& o, const __int128& x) {
     return o << x / 10 << (char)(x % 10 + '0');
 }
 
-void solve()
-{
+void solve() {
     
 }
 
-void precalc() {}
-
-int main()
-{
+int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 #ifdef DEBUG
     freopen("output.txt", "w", stdout);
     freopen("input.txt", "r", stdin);
 #endif
     srand( time(NULL) );
-    int T;
-    T = 1;
-    clock_t tStart = clock();
-    precalc();
+    int T = 1;
+    clock_t start = clock();
     For(t, T) solve();
-    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+    printf("Time taken: %.2fs\n", (double)(clock() - start)/CLOCKS_PER_SEC);
     return 0;
 }

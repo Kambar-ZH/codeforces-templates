@@ -5,44 +5,35 @@ using namespace std;
 #define For(i, n)           for(int i = 0; i < n; ++i)
 #define all(x)              (x).begin(),(x).end()
 #define rall(x)             (x).rbegin(),(x).rend()
+#define ls(x)               x+x+1
+#define rs(x)               x+x+2
+#define endl                '\n'
 
 #define ld                  long double
 #define pii                 pair<int, int>
 #define vt                  vector
 #define ll                  long long
-#define endl                '\n'
+
+template<typename T>
+void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
+template<typename T>
+void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
+template<typename T>
+void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
+template<typename T>
+void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
 const int MAX = 1e9;
-const int MOD = 1e9 + 7;
+const int MOD = 1e9+7;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
-
-template<typename T>
-void read(vt<T> & a) {
-    For(i, a.size()) cin >> a[i];
-}
-template<typename T>
-void print(vt<T> & a) {
-    For(i, a.size()) cout << a[i] << " ";
-    cout << endl;
-}
-template<typename T>
-void print2(vt<vt<T> > & a) {
-    For(i, a.size()) {
-        For(j, a[i].size()) cout << a[i][j] << " ";
-        cout << endl;
-    }
-}
-template<typename T>
-void read2(vt<vt<T> > & a) {
-    For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
-}
 
 struct sorter {
     ll inv_cnt = 0;
     vt<int> a;
-    sorter(vt<int> _a) {
-        a = _a;
+
+    sorter(vt<int> a) {
+        this->a = a;
     }
     
     void merge_sort(int l, int r) {
@@ -57,7 +48,7 @@ struct sorter {
         vt<int> b;
     
         while (l2 <= m && m2 <= r) {
-            if (a[l2] <= a[m2]) { // be caarefull with this value, for not unique values
+            if (a[l2] <= a[m2]) { // be carefull with this value, for not unique values
                 b.push_back(a[l2]); 
                 l2++;
             } else {
@@ -81,30 +72,14 @@ struct sorter {
             a[i] = b[i - l];
         }
     }
-
-    ll get_inv_cnt() {
-        return inv_cnt;
-    }
 };
 
-void solve()
-{
+void solve() {
     
 }
- 
-int main()
-{
+
+int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-// #define FILE
-#ifdef FILE
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
-#endif
-    cout << setprecision(20) << fixed;
-    int T = 1;
-    cin >> T;
-    For(t, T) {
-        solve();
-    }
+    solve();
     return 0;
 }
