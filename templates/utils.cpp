@@ -88,8 +88,8 @@ vt<vt<T> > generate_permutations(vt<T> a) {
     return perms;
 }
 
-std::ostream& operator<<(std::ostream& o, const __int128& x) {
-    if (x == std::numeric_limits<__int128>::min()) return o << "-170141183460469231731687303715884105728";
+ostream& operator<<(ostream& o, const __int128& x) {
+    if (x == numeric_limits<__int128>::min()) return o << "-170141183460469231731687303715884105728";
     if (x < 0) return o << "-" << -x;
     if (x < 10) return o << (char)(x + '0');
     return o << x / 10 << (char)(x % 10 + '0');
