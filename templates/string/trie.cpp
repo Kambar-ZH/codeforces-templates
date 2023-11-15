@@ -165,7 +165,7 @@ struct trie {
 		int n = s.length();
 		
 		vt<vt<int> > gr(ver_count + 1);
-		vt<set<int> > node(ver_count + 1);
+		vt<vt<int> > node(ver_count + 1);
 
 		function<void(int)> calc = [&] (int v) {
 			if (v == 0) {
@@ -184,31 +184,41 @@ struct trie {
 
 		for (int i = 0; i < n; i++) {
 			cur = go(cur, s[i] - 'a');
-			node[cur].insert(i);
+			node[cur].push_back(i);
 			calc(cur);
 		}
 
 		vt<pii> ans(strs.size(), {-1, -1});
-		function<set<int>(int)> dp = [&] (int v) -> set<int> {
-            set<int> temp;
+		function<pair<int, int>(int)> dp = [&] (int v) -> pair<int, int> {
+            pii result = {-1, -1};
 			for (int u : gr[v]) {
                 auto ch = dp(u);
-                for (int x : ch) {
-                    temp.insert(x);
-                }
-			}
-			for (int x : node[v]) {
-				temp.insert(x);
-			}
-			set<int> result;
-			if (!temp.empty()) {
-				result.insert(*temp.begin());
-				result.insert(*temp.rbegin());
-				for (int x : t[v].leaf) {
-					ans[x].first = *result.begin() - (strs[x].length() - 1);
-					ans[x].second = *result.rbegin() - (strs[x].length() - 1);
+				if (ch.first != -1) {
+					if (result.first == -1) {
+						result.first = ch.first;
+					} else {
+						result.first = min(result.first, ch.first);
+					}
 				}
+                result.second = max(result.second, ch.second);
 			}
+			
+			for (int x : node[v]) {
+                if (result.first == -1) {
+                    result.first = x;
+                } else {
+				    result.first = min(result.first, x);
+                }
+				result.second = max(result.second, x);
+			}
+
+            if (result.first != -1) {
+                for (int x : t[v].leaf) {
+                    ans[x].first = result.first - (strs[x].length() - 1);
+                    ans[x].second = result.second - (strs[x].length() - 1);
+                }
+            }
+
 			return result;
 		};
 
