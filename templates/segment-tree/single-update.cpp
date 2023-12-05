@@ -79,20 +79,23 @@ struct seg_tree_single {
 	}
  
 	T _get(int x, int lx, int rx, int l, int r) {
-		if (r < lx || rx < l) {
-			return T::identitity();
-		}
-		
-		if (l <= lx && rx <= r) {
+		if (l == lx && rx == r) {
 			return tree[x];
 		}
 
 		int mx = (lx + rx) >> 1;
-		
-		T left_subtree = _get(ls(x), lx, mx, l, r);
-		T right_subtree = _get(rs(x), mx + 1, rx, l, r);
 
-		return T::merge(left_subtree, right_subtree);
+        if (r <= mx) {
+            return _get(ls(x), lx, mx, l, r);
+        }
+        if (l > mx) {
+            return _get(rs(x), mx + 1, rx, l, r);
+        }
+
+		T left = _get(ls(x), lx, mx, l, mx);
+		T right = _get(rs(x), mx + 1, rx, mx + 1, r);
+
+		return T::merge(left, right);
 	}
  
 	T get(int l, int r) {
