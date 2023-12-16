@@ -54,7 +54,7 @@ struct seg_tree_push {
             lazy[v] += addend;
         } else {
             push(v);
-            int tm = (tl + tr) / 2;
+            int tm = tl + tr >> 1;
             _update(ls(v), tl, tm, l, min(r, tm), addend);
             _update(rs(v), tm+1, tr, max(l, tm+1), r, addend);
             tree[v] = max(tree[ls(v)], tree[rs(v)]);
@@ -71,7 +71,7 @@ struct seg_tree_push {
         if (l == tl && tr == r)
             return tree[v];
         push(v);
-        int tm = (tl + tr) / 2;
+        int tm = tl + tr >> 1;
         return max(_query(ls(v), tl, tm, l, min(r, tm)), 
                 _query(rs(v), tm+1, tr, max(l, tm+1), r));
     }
