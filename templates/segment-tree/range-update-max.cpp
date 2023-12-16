@@ -28,41 +28,43 @@ const int MOD = 1e9+7;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct seg_tree {
+const int NEED_PUSH = 0, EMPTY = -1;
+
+struct seg_tree_push {
 	int n;
 	vt<int> lazy, tree;
-	seg_tree(int n) {
+	seg_tree_push(int n) {
 		this->n = n;
 		tree.resize(4 * n);
-		lazy.resize(4 * n);
+		lazy.resize(4 * n, EMPTY);
 	}
  
 	void push(int v) {
-        tree[ls(v)] = (tree[ls(v)] + lazy[v]);
-        lazy[ls(v)] = (lazy[ls(v)] + lazy[v]);
-        tree[rs(v)] = (tree[rs(v)] + lazy[v]);
-        lazy[rs(v)] = (lazy[rs(v)] + lazy[v]);
-        lazy[v] = 0;
+        if (lazy[v] == NEED_PUSH) {
+            tree[ls(v)] = tree[rs(v)] = tree[v];
+            lazy[ls(v)] = lazy[rs(v)] = NEED_PUSH;
+            lazy[v] = EMPTY;
+        }
     }
 
-    void _update(int v, int tl, int tr, int l, int r, int addend) {
+    void _update(int v, int tl, int tr, int l, int r, int color) {
         if (r < tl || tr < l) {
             return;
         }
         if (l == tl && tr == r) {
-            tree[v] += addend;
-            lazy[v] += addend;
+            tree[v] = color;
+            lazy[v] = NEED_PUSH;
         } else {
             push(v);
             int tm = (tl + tr) / 2;
-            _update(ls(v), tl, tm, l, min(r, tm), addend);
-            _update(rs(v), tm+1, tr, max(l, tm+1), r, addend);
+            _update(ls(v), tl, tm, l, min(r, tm), color);
+            _update(rs(v), tm+1, tr, max(l, tm+1), r, color);
             tree[v] = max(tree[ls(v)], tree[rs(v)]);
         }
     }
 
-    void update(int l, int r, int addend) {
-        _update(0, 0, n-1, l, r, addend);
+    void update(int l, int r, int color) {
+        _update(0, 0, n-1, l, r, color);
     }
 
     int _query(int v, int tl, int tr, int l, int r) {
@@ -81,9 +83,10 @@ struct seg_tree {
     }
 };
 
-void solve() {
+void solve()
+{
     int n; cin >> n;
-    seg_tree tree = seg_tree(n);
+    seg_tree_push tree = seg_tree_push(n);
 }
 
 int main() {
