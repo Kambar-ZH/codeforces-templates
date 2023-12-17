@@ -28,49 +28,73 @@ const int MOD = 1e9+7;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct lca_tree {
+struct node {
+	ll value;
+	node() : value(MAX) {};
+
+	node(ll value) : value(value) {};
+
+	static node merge(node & n1, node & n2) {
+		node r(min(n1.value, n2.value));
+		return r;
+	}
+};
+
+template<typename T>
+struct tree {
     int N, L;
-    vt<int> par, val, depth;
-    vt<vt<int> > dp_par, dp_val;
-    int T;
+    vt<int> par, depth;
+    vt<T> val;
+    vt<vt<int> > dp_par; // dp_par[0] is itself 
+    vt<vt<T> > dp_val;
+    int timer;
     vt<int> in, out;
 
-    lca_tree(int N) {
+    tree(int N) {
         this->N      = N;
         this->L      = log2(N) + 2;
         this->par    = vt<int> (N, -1);
-        this->val    = vt<int> (N);
+        this->val    = vt<T> (N);
         this->depth  = vt<int> (N);
-        this->dp_par = vt<vt<int> >(N, vt<int> (L, -1));
-        this->dp_val = vt<vt<int> >(N, vt<int> (L, 0));
         this->in     = vt<int> (N);
         this->out    = vt<int> (N);
-        this->T      = 0;
+        this->timer  = 0;
+    }
+
+    tree(vt<T> val) {
+        this->N      = val.size();
+        this->L      = log2(N) + 2;
+        this->par    = vt<int> (N, -1);
+        this->val    = val;
+        this->depth  = vt<int> (N);
+        this->in     = vt<int> (N);
+        this->out    = vt<int> (N);
+        this->timer  = 0;
     }
 
     void dfs(int v, int p, vt<vt<int> > & g) {
-        in[v] = ++T;
+        in[v] = ++timer;
         par[v] = p;
         if (p != -1) {
             depth[v] = depth[p] + 1;
         }
+
         for (int u : g[v]) {
             if (u == p) continue;
             dfs(u, v, g);
         }
-        out[v] = T;
+
+        out[v] = timer;
     }
 
-    void find_parents() {
+    void calc_dp_par() {
+        dp_par = vt<vt<int> >(N, vt<int> (L, -1));
+
         for (int i = 0; i < N; i++) {
-            dp_val[i][0] = val[i];
-            dp_val[i][1] = val[i];
-            if (par[i] != -1) {
-                dp_val[i][1] |= val[par[i]];
-            }
             dp_par[i][0] = i;
             dp_par[i][1] = par[i];
         }
+
         for (int l = 2; l < L; l++) {
             for (int i = 0; i < N; i++) {
                 int par = dp_par[i][l - 1];
@@ -79,11 +103,24 @@ struct lca_tree {
                 }
             }
         }
+    }
+
+    void calc_dp_val() {
+        dp_val = vt<vt<T> >(N, vt<T> (L));
+
+        for (int i = 0; i < N; i++) {
+            dp_val[i][0] = val[i];
+            dp_val[i][1] = val[i];
+            if (par[i] != -1) {
+                dp_val[i][1] = T::merge(dp_val[i][1], val[par[i]]);
+            }
+        }
+
         for (int l = 2; l < L; l++) {
             for (int i = 0; i < N; i++) {
                 int par = dp_par[i][l - 1];
                 if (par != -1) {
-                    dp_val[i][l] = (dp_val[i][l - 1] | dp_val[par][l - 1]);
+                    dp_val[i][l] = T::merge(dp_val[i][l - 1], dp_val[par][l - 1]);
                 }
             }
         }
@@ -97,9 +134,11 @@ struct lca_tree {
         if (is_par(node2, node1)) {
             return node1;
         }
+
         if (is_par(node1, node2)) {
             return node2;
         }
+
         for (int i = L - 1; i >= 1; i--) {
             int par = dp_par[node1][i];
             if (par == -1) continue;
@@ -107,50 +146,85 @@ struct lca_tree {
                 node1 = par;
             }
         }
+
         return par[node1];
     }
 
-    int ans(int node, int k) {
-        int val = 0;
+    // returns -1 if k-th parent doesn't exist 
+    int kth_par(int node, int k) {
+        if (k >= N) {
+            return -1;
+        }
+
         for (int i = L - 1; i >= 1; i--) {
             int par = dp_par[node][i];
-            if (par == -1) continue;
             if (k & (1 << (i - 1))) {
-                k -= (1 << (i - 1));
-                val = val | dp_val[node][i];
+                k ^= (1 << (i - 1));
                 node = par;
+                if (node == -1) {
+                    return -1;
+                }
             }
         }
-        val = val | dp_val[node][0];
-        return val;
+
+        return node;
     }
 
-    int kth_par(int node, int k) {
+    T ans(int node, int k) {
+        if (k < 0) {
+            return T();
+        }
+        T val = T();
+
         for (int i = L - 1; i >= 1; i--) {
             int par = dp_par[node][i];
             if (par == -1) continue;
             if (k & (1 << (i - 1))) {
-                k -= (1 << (i - 1));
+                k ^= (1 << (i - 1));
+                val = T::merge(val, dp_val[node][i]);
                 node = par;
             }
         }
-        return node;
+
+        return T::merge(val, dp_val[node][0]);
+    }
+
+    // to simulate edge - set value of directed edge (u -> v) to v-th node
+    T ans_between_edges(int node1, int node2) {
+        int p = lca(node1, node2);
+        T ans1 = ans(node1, depth[node1] - depth[p] - 1),
+          ans2 = ans(node2, depth[node2] - depth[p] - 1);
+
+        return T::merge(ans1, ans2);
+    }
+
+    T ans_between_nodes(int node1, int node2) {
+        int p = lca(node1, node2);
+        T ans1 = ans(node1, depth[node1] - depth[p]),
+          ans2 = ans(node2, depth[node2] - depth[p]);
+
+        return T::merge(ans1, ans2);
     }
 };
 
 void solve() {
-    int n, m; cin >> n >> m;
-    vt<int> val(n); read(val);
+    int n; cin >> n;
     vt<vt<int> > g(n);
-    For(i, m) {
-        int u, v, w; cin >> u >> v >> w; u--, v--;
-        g[u].push_back(v);
-        g[v].push_back(u);
+    vt<node> val(n);
+    For(i, n - 1) {
+        int x, y; cin >> x >> y; x--;
+        g[x].push_back(i + 1);
+        val[i + 1] = node(y);
     }
-    lca_tree tree = lca_tree(n);
-    tree.dfs(0, -1, g);
-    tree.val = val;
-    tree.find_parents();
+    tree<node> t = tree<node>(val);
+    t.dfs(0, -1, g);
+    t.calc_dp_par();
+    t.calc_dp_val();
+    int m; cin >> m;
+    For(i, m) {
+        int u, v; cin >> u >> v; u--, v--;
+        cout << t.ans_between_edges(u, v).value << endl;
+    }
 }
 
 int main() {
