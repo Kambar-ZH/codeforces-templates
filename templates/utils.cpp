@@ -106,6 +106,7 @@ int main() {
     freopen("input.txt", "r", stdin);
 #endif
     srand( time(NULL) );
+    cout << setprecision(20) << fixed;
     int T = 1;
     clock_t start = clock();
     For(t, T) solve();
