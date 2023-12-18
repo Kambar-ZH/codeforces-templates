@@ -31,24 +31,29 @@ const ld  PI  = 3.14159265358979323846;
 struct DSU {
     int n, cnt;
     vt<int> par, sz;
+
     DSU(int n) {
         this->n = n;
         cnt = 1;
         par = vt<int> (n); iota(all(par), 0);
         sz = vt<int> (n, 1);
     }
+
     int find(int v) {
         if (par[v] == v) {
             return v;
         }
+
         return par[v] = find(par[v]);
     }
+
     bool merge(int v, int u) {
         v = find(v);
         u = find(u);
         if (u == v) {
             return false;
         }
+
         cnt++;
         if (sz[v] > sz[u]) {
             par[u] = v;
@@ -57,15 +62,18 @@ struct DSU {
             par[v] = u;
             sz[v] +=sz[u];
         }
+
         return true;
     }
-    bool connected() {
+
+    bool is_connected() {
         return cnt == n;
     }
 };
 
 void solve() {
-    
+    int n; cin >> n;
+    DSU dsu = DSU(n);
 }
 
 int main() {
