@@ -30,66 +30,72 @@ const ld  PI  = 3.14159265358979323846;
 
 struct seg_tree_push {
     int n;
-    vt<ll> t;
-    vt<int> p, tmax;
+    vt<ll> tree;
+    vt<int> lazy;
 
-    seg_tree_push(int _n) {
-        this->n = calc_size(_n);
-        this->t = vt<ll> (n << 1, 0);
-        this->p = vt<int> (n << 1, -1);
+    seg_tree_push(int n) {
+        this->n = n;
+        this->tree = vt<ll> (n << 2, 0);
+        this->lazy = vt<int> (n << 2, -1);
     }
-
-    int calc_size(int _n) {
-		int size = 1;
-		while (size < _n) size <<= 1;
-        return size;
-	}
 
     void push(int v, int tl, int tr) {
-        if (p[v] == -1) return;
+        if (lazy[v] == -1) return;
         if (tl != tr) {
-            p[ls(v)] = p[v];
-            p[rs(v)] = p[v];
+            lazy[ls(v)] = lazy[v];
+            lazy[rs(v)] = lazy[v];
         }
-        t[v] = (tr - tl + 1) * 1LL * p[v];
-        p[v] = -1;
+        tree[v] = (tr - tl + 1) * 1LL * lazy[v];
+        lazy[v] = -1;
     }
 
-    void _update(int l, int r, int val, int v, int tl, int tr) {
-        push(v, tl, tr);
-        if (l <= tl && tr <= r) {
-            p[v] = val;
-            push(v, tl, tr);
+	ll _get(int x, int lx, int rx, int l, int r) {
+		push(x, lx, rx);
+
+		if (l == lx && rx == r) {
+			return tree[x];
+		}
+
+		int mx = (lx + rx) >> 1;
+
+        if (r <= mx) {
+            return _get(ls(x), lx, mx, l, r);
+        }
+        if (l > mx) {
+            return _get(rs(x), mx + 1, rx, l, r);
+        }
+
+		return _get(ls(x), lx, mx, l, mx) +
+			_get(rs(x), mx + 1, rx, mx + 1, r);
+	}
+
+    ll get(int l, int r) {
+        return _get(0, 0, n - 1, l, r);
+    }
+
+	void _update(int x, int lx, int rx, int l, int r, int val) {
+        if (r < lx || rx < l) {
             return;
         }
-        if (r < tl || tr < l) {
+        
+        if (l == lx && rx == r) {
+            lazy[x] = val;
+            push(x, lx, rx);
             return;
         }
-        int tm = tl + tr >> 1;
-        _update(l, r, val, ls(v), tl, tm);
-        _update(l, r, val, rs(v), tm + 1, tr);
-        t[v] = t[ls(v)] + t[rs(v)];
-        tmax[v] = max(tmax[ls(v)], tmax[rs(v)]);
+        
+        push(x, lx, rx);
+
+        int mx = (lx + rx) >> 1;
+        
+        _update(ls(x), lx, mx, l, min(r, mx), val);
+        _update(rs(x), mx + 1, rx, max(l, mx + 1), r, val);
+
+        tree[x] = tree[ls(x)] + tree[rs(x)];
     }
 
     void update(int l, int r, int val) {
-        return _update(l, r, val, 0, 0, n - 1);
-    }
- 
-    ll _query(int l, int r, int v, int tl, int tr) {
-        push(v, tl, tr);
-        if (l <= tl && tr <= r) {
-            return t[v];
-        }
-        if (r < tl || tr < l) {
-            return 0;
-        }
-        int tm = tl + tr >> 1;
-        return _query(l, r, ls(v), tl, tm) + _query(l, r, rs(v), tm + 1, tr);
-    }
-
-    ll query(int l, int r) {
-        return _query(l, r, 0, 0, n - 1);
+        _update(0, 0, n - 1, l, r, val);
     }
 };
 

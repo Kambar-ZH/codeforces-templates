@@ -30,16 +30,11 @@ const ld  PI  = 3.14159265358979323846;
 
 struct node {
 	ll value;
-	node() {}
-	node(ll value) : value(value) {};
+	node() : value(0) {}
+	node(ll value) : value(value) {}
 
 	static node merge(node & n1, node & n2) {
 		node r(n1.value + n2.value);
-		return r;
-	}
-
-	static node identitity() {
-		node r(0);
 		return r;
 	}
 };
@@ -57,7 +52,7 @@ struct seg_tree_single {
 
 	seg_tree_single(int n) {
 		this->n = n; 
-		this->tree.resize(4 * n, T::identitity());
+		this->tree.resize(4 * n);
 	}
 
 	void _build(int x, int l, int r) {
@@ -92,10 +87,10 @@ struct seg_tree_single {
             return _get(rs(x), mx + 1, rx, l, r);
         }
 
-		T left = _get(ls(x), lx, mx, l, mx);
-		T right = _get(rs(x), mx + 1, rx, mx + 1, r);
-
-		return T::merge(left, right);
+		return T::merge(
+			_get(ls(x), lx, mx, l, mx), 
+			_get(rs(x), mx + 1, rx, mx + 1, r)
+		);
 	}
  
 	T get(int l, int r) {
