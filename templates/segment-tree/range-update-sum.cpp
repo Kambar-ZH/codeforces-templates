@@ -33,20 +33,22 @@ struct seg_tree_push {
     vt<ll> tree;
     vt<int> lazy;
 
+    seg_tree_push() {}
+
     seg_tree_push(int n) {
         this->n = n;
         this->tree = vt<ll> (n << 2, 0);
         this->lazy = vt<int> (n << 2, -1);
     }
 
-    void push(int v, int tl, int tr) {
-        if (lazy[v] == -1) return;
-        if (tl != tr) {
-            lazy[ls(v)] = lazy[v];
-            lazy[rs(v)] = lazy[v];
+    void push(int x, int lx, int rx) {
+        if (lazy[x] == -1) return;
+        if (lx != rx) {
+            lazy[ls(x)] = lazy[x];
+            lazy[rs(x)] = lazy[x];
         }
-        tree[v] = (tr - tl + 1) * 1LL * lazy[v];
-        lazy[v] = -1;
+        tree[x] = (rx - lx + 1) * 1LL * lazy[x];
+        lazy[x] = -1;
     }
 
 	ll _get(int x, int lx, int rx, int l, int r) {

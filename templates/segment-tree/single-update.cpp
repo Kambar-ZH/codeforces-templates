@@ -33,7 +33,7 @@ struct node {
 	node() : value(0) {}
 	node(ll value) : value(value) {}
 
-	static node merge(node & n1, node & n2) {
+	static node merge(node n1, node n2) {
 		node r(n1.value + n2.value);
 		return r;
 	}
@@ -43,6 +43,9 @@ template<typename T>
 struct seg_tree_single {
 	int n;
 	vt<T> a, tree;
+
+	seg_tree_single() {}
+
 	seg_tree_single(vt<T> a) {
 		this->n = a.size(); 
 		this->a = a;

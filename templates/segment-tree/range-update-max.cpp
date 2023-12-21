@@ -33,6 +33,9 @@ const int NEED_PUSH = 0, EMPTY = -1;
 struct seg_tree_push {
 	int n;
 	vt<int> lazy, tree;
+
+    seg_tree_push() {}
+
 	seg_tree_push(int n) {
 		this->n = n;
 		tree.resize(4 * n);
@@ -67,19 +70,19 @@ struct seg_tree_push {
         _update(0, 0, n-1, l, r, color);
     }
 
-    int _query(int v, int tl, int tr, int l, int r) {
+    int _get(int v, int tl, int tr, int l, int r) {
         if (l > r)
             return -MAX;
         if (l == tl && tr == r)
             return tree[v];
         push(v);
         int tm = tl + tr >> 1;
-        return max(_query(ls(v), tl, tm, l, min(r, tm)), 
-                _query(rs(v), tm+1, tr, max(l, tm+1), r));
+        return max(_get(ls(v), tl, tm, l, min(r, tm)), 
+                _get(rs(v), tm+1, tr, max(l, tm+1), r));
     }
 
-    int query(int l, int r) {
-        return _query(0, 0, n-1, l, r);
+    int get(int l, int r) {
+        return _get(0, 0, n-1, l, r);
     }
 };
 

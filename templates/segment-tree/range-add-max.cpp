@@ -31,8 +31,10 @@ const ld  PI  = 3.14159265358979323846;
 struct seg_tree_push {
 	int n;
 	vt<ll> tree, lazy;
+
     seg_tree_push() {}
-	seg_tree_push(int n) {
+	
+    seg_tree_push(int n) {
 		this->n = n;
 		tree.resize(4 * n);
 		lazy.resize(4 * n);
