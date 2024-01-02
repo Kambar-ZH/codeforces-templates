@@ -95,6 +95,23 @@ ostream& operator<<(ostream& o, const __int128& x) {
     return o << x / 10 << (char)(x % 10 + '0');
 }
 
+vt<string> split(string str, char sep) {
+    vt<string> result;
+    string cur = "";
+    int i = 0;
+    while (i != str.length()) {
+        if (str[i] != sep) {
+            cur += str[i]; 
+        } else {
+            result.push_back(cur);
+            cur.clear();
+        }
+        i++;
+    }
+    result.push_back(cur);
+    return result;
+}
+
 void solve() {
     
 }
