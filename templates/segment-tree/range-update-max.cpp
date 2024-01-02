@@ -28,9 +28,9 @@ const int MOD = 1e9+7;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-const int NEED_PUSH = 0, EMPTY = -1;
-
 struct seg_tree_push {
+	const int NO_PUSH = -MAX;
+
 	int n;
 	vt<int> lazy, tree;
 
@@ -38,51 +38,67 @@ struct seg_tree_push {
 
 	seg_tree_push(int n) {
 		this->n = n;
-		tree.resize(4 * n);
-		lazy.resize(4 * n, EMPTY);
+		tree.resize(4 * n, MAX);
+		lazy.resize(4 * n, NO_PUSH);
 	}
- 
-	void push(int v) {
-        if (lazy[v] == NEED_PUSH) {
-            tree[ls(v)] = tree[rs(v)] = tree[v];
-            lazy[ls(v)] = lazy[rs(v)] = NEED_PUSH;
-            lazy[v] = EMPTY;
+
+	void push(int x, int lx, int rx) {
+        if (lazy[x] == NO_PUSH) return;
+        if (lx != rx) {
+            lazy[ls(x)] = lazy[x];
+            lazy[rs(x)] = lazy[x];
         }
+        tree[x] = lazy[x];
+		lazy[x] = NO_PUSH;
     }
 
-    void _update(int v, int tl, int tr, int l, int r, int color) {
-        if (r < tl || tr < l) {
+	ll _get(int x, int lx, int rx, int l, int r) {
+		push(x, lx, rx);
+
+		if (l == lx && rx == r) {
+			return tree[x];
+		}
+
+		int mx = (lx + rx) >> 1;
+
+        if (r <= mx) {
+            return _get(ls(x), lx, mx, l, r);
+        }
+        if (l > mx) {
+            return _get(rs(x), mx + 1, rx, l, r);
+        }
+
+		return min(_get(ls(x), lx, mx, l, mx),
+			_get(rs(x), mx + 1, rx, mx + 1, r));
+	}
+
+    ll get(int l, int r) {
+        return _get(0, 0, n - 1, l, r);
+    }
+
+	void _update(int x, int lx, int rx, int l, int r, int value) {
+        if (r < lx || rx < l) {
             return;
         }
-        if (l == tl && tr == r) {
-            tree[v] = color;
-            lazy[v] = NEED_PUSH;
-        } else {
-            push(v);
-            int tm = tl + tr >> 1;
-            _update(ls(v), tl, tm, l, min(r, tm), color);
-            _update(rs(v), tm+1, tr, max(l, tm+1), r, color);
-            tree[v] = max(tree[ls(v)], tree[rs(v)]);
+        
+        if (l == lx && rx == r) {
+            lazy[x] = value;
+            push(x, lx, rx);
+            return;
         }
+        
+        push(x, lx, rx);
+
+        int mx = (lx + rx) >> 1;
+        
+        _update(ls(x), lx, mx, l, min(r, mx), value);
+        _update(rs(x), mx + 1, rx, max(l, mx + 1), r, value);
+
+        tree[x] = min(tree[ls(x)], tree[rs(x)]);
     }
 
-    void update(int l, int r, int color) {
-        _update(0, 0, n-1, l, r, color);
-    }
-
-    int _get(int v, int tl, int tr, int l, int r) {
-        if (l > r)
-            return -MAX;
-        if (l == tl && tr == r)
-            return tree[v];
-        push(v);
-        int tm = tl + tr >> 1;
-        return max(_get(ls(v), tl, tm, l, min(r, tm)), 
-                _get(rs(v), tm+1, tr, max(l, tm+1), r));
-    }
-
-    int get(int l, int r) {
-        return _get(0, 0, n-1, l, r);
+    void update(int l, int r, int value) {
+        _update(0, 0, n - 1, l, r, value);
     }
 };
 
