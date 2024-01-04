@@ -47,6 +47,24 @@ vector<int> manacher(string s) {
     return len;
 }
 
+vt<vt<bool> > is_pal(string s) {
+	int n = s.length();
+	vt<vt<bool> > is_pal(n, vt<bool> (n));
+	for (int i = 0; i < n; i++) {
+		for (int r = 0; i - r >= 0 && i + r < n; r++) {
+			if (s[i - r] != s[i + r]) break;
+			is_pal[i - r][i + r] = true;
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int r = 0; i - r >= 0 && i + r + 1 < n; r++) {
+			if (s[i - r] != s[i + r + 1]) break;
+			is_pal[i - r][i + r + 1] = true;
+		}
+	}
+    return is_pal;
+}
+
 void solve() {
 	string s; cin >> s;
 	vt<int> res = manacher(s);
