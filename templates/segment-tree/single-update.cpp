@@ -32,30 +32,33 @@ struct node {
 	ll value;
 	node() : value(0) {}
 	node(ll value) : value(value) {}
+};
 
-	static node merge(node n1, node n2) {
-		node r(n1.value + n2.value);
+template<typename N>
+struct summer {
+	static N merge(N & n1, N & n2) {
+		N r(n1.value + n2.value);
 		return r;
 	}
 };
 
-template<typename T>
+template<typename N, typename M>
 struct seg_tree_single {
 	int n;
-	vt<T> a, tree;
+	vt<N> a, tree;
 
 	seg_tree_single() {}
 
-	seg_tree_single(vt<T> a) {
+	seg_tree_single(vt<N> a) {
 		this->n = a.size(); 
 		this->a = a;
-		this->tree.resize(4 * n);
+		this->tree.resize(n << 2);
 		this->build();
 	}
 
 	seg_tree_single(int n) {
 		this->n = n; 
-		this->tree.resize(4 * n);
+		this->tree.resize(n << 2);
 	}
 
 	void _build(int x, int l, int r) {
@@ -69,14 +72,14 @@ struct seg_tree_single {
 		_build(ls(x), l, m);
 		_build(rs(x), m + 1, r);
 		
-		tree[x] = T::merge(tree[ls(x)], tree[rs(x)]);
+		tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
 	}
  
 	void build() {
 		_build(0, 0, n - 1);
 	}
  
-	T _get(int x, int lx, int rx, int l, int r) {
+	N _get(int x, int lx, int rx, int l, int r) {
 		if (l == lx && rx == r) {
 			return tree[x];
 		}
@@ -90,17 +93,17 @@ struct seg_tree_single {
             return _get(rs(x), mx + 1, rx, l, r);
         }
 
-		return T::merge(
-			_get(ls(x), lx, mx, l, mx), 
-			_get(rs(x), mx + 1, rx, mx + 1, r)
-		);
+		N lst = _get(ls(x), lx, mx, l, mx);
+		N rst = _get(rs(x), mx + 1, rx, mx + 1, r);
+
+		return M::merge(lst, rst);
 	}
  
-	T get(int l, int r) {
+	N get(int l, int r) {
 		return _get(0, 0, n - 1, l, r);
 	}
 
-	void _update(int x, int lx, int rx, int id, T v) {
+	void _update(int x, int lx, int rx, int id, N & v) {
 		if (id < lx || rx < id) {
 			return;
 		}
@@ -115,10 +118,10 @@ struct seg_tree_single {
 		_update(ls(x), lx, mx, id, v);
 		_update(rs(x), mx + 1, rx, id, v);
 
-		tree[x] = T::merge(tree[ls(x)], tree[rs(x)]);
+		tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
 	}
 
-    void update(int id, T v) {
+    void update(int id, N & v) {
 		_update(0, 0, n - 1, id, v);
 	}
 };
@@ -130,12 +133,13 @@ void solve()
 	For(i, n) {
 		cin >> a[i].value;
 	}
-	seg_tree_single<node> tree = seg_tree_single<node>(a);
+	seg_tree_single<node, summer<node>> tree = seg_tree_single<node, summer<node>>(a);
 	For(i, m) {
 		int op; cin >> op;
 		if (op == 1) {
-			int id, v; cin >> id >> v;
-			tree.update(id, node(v));
+			int id, v; cin >> id >> v; id--;
+			node n = node(v);
+			tree.update(id, n);
 		} else {
 			int l, r; cin >> l >> r; l--, r--;
 			node n = tree.get(l, r);

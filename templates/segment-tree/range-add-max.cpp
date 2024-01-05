@@ -41,11 +41,12 @@ struct seg_tree_push {
 	}
  
 	void push(int x, int lx, int rx) {
-        tree[x] = (tree[x] + lazy[x]);
+        if (lazy[x] == 0) return;
         if (lx != rx) {
             lazy[ls(x)] = (lazy[ls(x)] + lazy[x]);
             lazy[rs(x)] = (lazy[rs(x)] + lazy[x]);
         }
+        tree[x] = (tree[x] + lazy[x]);
         lazy[x] = 0;
     }
 
@@ -81,7 +82,7 @@ struct seg_tree_push {
         }
         
         if (l == lx && rx == r) {
-            tree[x] += addend;
+            lazy[x] += addend;
             push(x, lx, rx);
             return;
         }
