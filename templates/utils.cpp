@@ -112,6 +112,14 @@ vt<string> split(string str, char sep) {
     return result;
 }
 
+set<int> to_set(vector<int> & a) {
+    // more optimized method which moves each element into a set instead of copying each element
+	return set<int> (
+        make_move_iterator(a.begin()), 
+        make_move_iterator(a.end())
+    );
+}
+
 void solve() {
     
 }
