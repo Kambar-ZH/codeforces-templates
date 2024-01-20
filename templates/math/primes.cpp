@@ -29,25 +29,41 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct eratosphen {
+private:
     int N;
+
+public:
     vt<bool> is_prime;
-    vt<int> largest_prime;
-    vt<int> primes;
+    vt<int> largest_prime, primes, phi;
     eratosphen(int N) {
         this->N = N;
-        this->is_prime = vt<bool> (N, true);
-        this->largest_prime = vt<int> (N); iota(all(largest_prime), 0);
-        this->sieve();
+
+        this->sieve_primes();
     }
 
-    void sieve() {
+    void sieve_primes() {
+        is_prime = vt<bool> (N + 1, true);
+        largest_prime = vt<int> (N + 1); iota(all(largest_prime), 0);
+
         is_prime[0] = is_prime[1] = false;
-        for (int i = 2; i * i < N; i++) {
+        for (int i = 2; i * i <= N; i++) {
             if (is_prime[i]) {
                 primes.push_back(i);
-                for (int j = i * i; j < N; j += i) {
+                for (int j = i * i; j <= N; j += i) {
                     is_prime[j] = false;
                     largest_prime[j] = i;
+                }
+            }
+        }
+    }
+
+    void sieve_phi() {
+        phi = vt<int> (N + 1); iota(all(phi), 0);
+
+        for (int i = 2; i <= N; ++i) {
+            if (phi[i] == i) {
+                for (int j = i; j <= N; j += i) {
+                    phi[j] -= phi[j] / i;
                 }
             }
         }
@@ -64,10 +80,10 @@ struct eratosphen {
     }
 
     // not including 1
-    map<int, int> map_factorize(int n) {
-        map<int, int> primes;
+    unordered_map<int, int> factors_occurence_cnt(int n) {
+        unordered_map<int, int> primes;
         while (largest_prime[n] != 1) {
-            primes[largest_prime[n]] += 1;
+            primes[largest_prime[n]]++;
             n = n / largest_prime[n];
         }
         return primes;
@@ -88,6 +104,36 @@ vt<int> factorize(int n) {
         primes.push_back(n);
     }
     return primes;
+}
+
+unordered_map<int, int> factors_occurence_cnt(int n) {
+    unordered_map<int, int> primes;
+    for (int d = 2; d * d <= n; d++) {
+        if (n % d == 0) {
+            while (n % d == 0) {
+                n /= d;
+                primes[d]++;
+            }
+        }
+    }
+    if (n != 1) {
+        primes[n]++;
+    }
+    return primes;
+}
+
+int phi(int n) {
+    unordered_map<int, int> divisors = factors_occurence_cnt(n); 
+
+    int ans = 1;
+    for(auto [prime, exp] : divisors) {
+        int power = 1;
+        for (int i = 1; i<exp; i++){
+            power *= prime;
+        }
+        ans *= (power * prime - power);
+    }
+    return ans;
 }
 
 vt<int> get_divisors(int n) {
