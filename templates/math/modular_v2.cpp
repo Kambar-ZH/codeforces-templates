@@ -196,6 +196,20 @@ public:
     static ll lucas_up_to(ll n, ll k, ll up_to, int mod) {
         return lucas((up_to - n % up_to) % up_to + k - 1, k - 1, mod);
     }
+
+    // a * x = b mod m
+    static vt<ll> congruence(ll a, ll b, ll m) {
+        vt<ll> res;
+        ll g = __gcd(a, m);
+        if (b % g != 0) return res;
+        // a / g * x + m / g * k = b / g
+        ll x = ext_gcd(a / g, m / g).x * (b / g);
+        ll step = m / g;
+        for (int k = 0; k < m; k += step) {
+            res.push_back((x + k) % m);
+        }
+        return res;
+    }
 };
 
 void solve() {
@@ -207,7 +221,7 @@ void solve() {
 
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    int T; cin >> T;
+    int T = 1;
     For(t, T) solve();
     return 0;
 }
