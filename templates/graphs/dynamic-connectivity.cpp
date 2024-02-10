@@ -7,7 +7,7 @@ using namespace std;
 #define rall(x)             (x).rbegin(),(x).rend()
 #define ls(x)               x+x+1
 #define rs(x)               x+x+2
-// #define endl                '\n'
+#define endl                '\n'
 
 #define ld                  long double
 #define pii                 pair<int, int>
@@ -23,184 +23,174 @@ void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
 template<typename T>
 void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
-#define sim template < class c
-#define ris return * this
-#define dor > debug & operator <<
-#define eni(x) sim > typename \
-enable_if<sizeof dud<c>(0) x 1, debug&>::type operator<<(c i) {
-sim > struct rge { c b, e; };
-sim > rge<c> range(c i, c j) { return rge<c>{i, j}; }
-sim > auto dud(c* x) -> decltype(cerr << *x, 0);
-sim > char dud(...);
-#define LOCAL
-struct debug {
-#ifdef LOCAL
-~debug() { cerr << endl; }
-eni(!=) cerr << boolalpha << i; ris; }
-eni(==) ris << range(begin(i), end(i)); }
-sim, class b dor(pair < b, c > d) {
-ris << "(" << d.first << ", " << d.second << ")";
-}
-sim dor(rge<c> d) {
-*this << "[";
-for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
-ris << "]";
-}
-#else
-sim dor(const c&) { ris; }
-#endif
-};
-#define imie(...) " [" << #__VA_ARGS__ ": " << (__VA_ARGS__) << "] "
-
 const int MAX = 1e9;
 const int MOD = 1e9+7;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct edge {
-    int a, b, l, r;
-};
+struct dsu_persistent {
+    vt<int> par, rank;
+    vt<pair<int*, int>> hist;
+    int components;
 
-struct operation {
-    char type; 
-    int a, b;
+    dsu_persistent() {}
+
+    dsu_persistent(int n) {
+        this->par = vt<int> (n, -1);
+        this->rank = vt<int> (n, 0);
+        this->components = n;
+    }
+
+    int find(int u) {
+        while (par[u] != -1) {
+            u = par[u];
+        }
+        return u;
+    }
+
+    bool merge(int u, int v) {
+        u = find(u);
+        v = find(v);
+        if (u == v) {
+            return false;
+        }
+        if (rank[u] > rank[v]) {
+            hist.emplace_back(&par[v], par[v]);
+            par[v] = u;
+        } else if (rank[u] < rank[v]) {
+            hist.emplace_back(&par[u], par[u]);
+            par[u] = v;
+        } else {
+            hist.emplace_back(&par[u], par[u]);
+            hist.emplace_back(&rank[v], rank[v]);
+            par[u] = v;
+            ++rank[v];
+        }
+        components++;
+        return true;
+    }
+
+    void rollback(int back_to) {
+        while ((int)hist.size() > back_to) {
+            *hist.back().first = hist.back().second;
+            hist.pop_back();
+            components--;
+        }
+    }
 };
 
 struct dynamic_connectivity {
-    int n, k;
-    vt<int> cnt, ans, color, used, deg;
-    vt<vt<int> > g;
+    struct query {
+        int type, u, v;
+        bool ans;
+    };
 
-    dynamic_connectivity(int n, int k) {
+    int n, q_cnt; 
+    dsu_persistent dsu;
+    vt<query> queries;
+    vt<vt<pii> > tree;
+
+    dynamic_connectivity() {}
+    
+    dynamic_connectivity(int n, int q_cnt) {
         this->n = n;
-        this->k = k;
-        this->cnt = vt<int> (k + 1);
-        this->ans = vt<int> (k);
-        this->color = vt<int> (n);
-        this->used = vt<int> (n);
-        this->deg = vt<int> (n);
-        this->g = vt<vt<int> > (n);
+        this->q_cnt = q_cnt;
+        this->dsu = dsu_persistent(n);
+        this->queries = vt<query> (q_cnt);
+        this->tree = vt<vt<pii> > (q_cnt << 2);
     }
 
-    vt<int> get_ans(vt<operation> & ops) {
-        map<pii, int> mp;
-        vt<edge> list;
-        for (int i = 0; i < ops.size(); i++) {
-            operation op = ops[i];
-            if (op.type == '?') {
-                cnt[i + 1]++;
-                cnt[i + 1] += cnt[i];
-                continue;
-            }
-            cnt[i + 1] += cnt[i];
-            if (op.a > op.b) swap(op.a, op.b);
-            if (op.a == op.b) {
-                i--, k--;
-                continue;
-            }
-            pii p = pii(op.a, op.b);
-            if (op.type == '+') {
-                mp[p] = i;
+    void input() {
+        set<pair<pii, int> > edges;
+        for (int i = 0; i < q_cnt; ++i) {
+            string op; cin >> op;
+            // handle query type
+            if (op == "add") {
+                queries[i].type = 1;
+            } else if (op == "rem") {
+                queries[i].type = 2;
             } else {
-                list.push_back(edge{op.a, op.b, mp[p], i});
-                mp[p] = -1;
+                queries[i].type = 3;
+            }
+            cin >> queries[i].u >> queries[i].v;
+            if (queries[i].u > queries[i].v) swap(queries[i].u, queries[i].v);
+            if (queries[i].type == 1) {
+                edges.emplace(pii(queries[i].u, queries[i].v), i);
+            }
+            else if (queries[i].type == 2) {
+                auto iter = edges.lower_bound(make_pair(pii(queries[i].u, queries[i].v), 0));
+                add_edge(iter->second, i, iter->first);
+                edges.erase(iter);
             }
         }
-        for (auto & [key, v] : mp) {
-            if (v != -1) {
-                list.push_back(edge{key.first, key.second, v, k});
+        // handle not deleted edges
+        for (auto e : edges) {
+            add_edge(e.second, q_cnt - 1, e.first);
+        }
+    }
+
+    void _add_edge(int l, int r, pii uv, int x, int lx, int rx) {
+        if (l > rx || r < lx)
+            return;
+        if (l <= lx && rx <= r) {
+            tree[x].push_back(uv);
+            return;
+        }
+        int mid = (lx + rx) >> 1;
+        _add_edge(l, r, uv, ls(x), lx, mid);
+        _add_edge(l, r, uv, rs(x), mid+1, rx);
+    }
+
+    void add_edge(int l, int r, pii uv) {
+        return _add_edge(l, r, uv, 0, 0, q_cnt - 1);
+    }
+
+    void _go(int x, int lx, int rx) {
+        int startSize = dsu.hist.size();
+        for (pii uv : tree[x])
+            dsu.merge(uv.first, uv.second);
+
+        if (lx == rx) {
+            if (queries[lx].type == 3) {
+                queries[lx].ans = (dsu.find(queries[lx].u) == dsu.find(queries[lx].v));
             }
+        } else {
+            int mid = (lx + rx) / 2;
+            _go(ls(x), lx, mid);
+            _go(rs(x), mid+1, rx);
         }
 
-        this->go(list);
+        dsu.rollback(startSize);
+    }
 
-        vt<int> ans;
-        For(i, k) {
-            if (cnt[i] != cnt[i + 1]) {
-                ans.push_back(this->ans[i]);
+    void go() {
+        return _go(0, 0, q_cnt - 1);
+    }
+
+    vt<bool> get_ans() {
+        vt<bool> ans;
+        for (int i = 0; i < q_cnt; i++) {
+            if (queries[i].type == 3) {
+                ans.push_back(queries[i].ans);
             }
         }
         return ans;
     }
-
-    void dfs(int v, int value) {
-        used[v] = 1, color[v] = value;
-        for (int u : g[v]) {
-            if (used[u]) continue;
-            dfs(u, value);
-        }
-    }
-
-    void _go(int l, int r, const vt<edge> & list, int vn, int add_vn) { // [l, r)
-        if (cnt[l] == cnt[r]) return;
-        if (list.empty()) {
-            for (int i = l; i < r; i++) {
-                ans[i] = vn + add_vn;
-            }
-            return;
-        }
-        vt<edge> list2;
-        for (int i = 0; i < vn; i++) {
-            g[i].clear();
-        }
-        for (edge e : list) {
-            if (e.a == e.b) continue;
-
-            if (e.l <= l && r <= e.r) {
-                g[e.a].push_back(e.b);
-                g[e.b].push_back(e.a);
-            } else if (l < e.r && e.l < r) {
-                list2.push_back(e);
-            }
-        }
-        int vn2 = 0;
-        for (int i = 0; i < vn; i++) {
-            used[i] = 0;
-        }
-        for (int i = 0; i < vn; i++) {
-            if (used[i]) continue;
-            deg[vn2] = 0, dfs(i, vn2++);
-        }
-        for (edge & e : list2) {
-            e.a = color[e.a];
-            e.b = color[e.b];
-            if (e.a == e.b) continue;
-            deg[e.a]++, deg[e.b]++;
-        }
-        
-        vn = vn2, vn2 = 0;
-        for (int i = 0; i < vn; i++) {
-            color[i] = vn2, vn2 += (deg[i] > 0), add_vn += (deg[i] == 0);  
-        }
-        for (edge & e : list2) {
-            e.a = color[e.a];
-            e.b = color[e.b];
-        }
-
-        int m = (l + r) >> 1;
-        _go(l, m, list2, vn2, add_vn);
-        _go(m, r, list2, vn2, add_vn);
-    }
-
-    void go(const vt<edge> & list) {
-        _go(0, k, list, n, 0);
-    }
 };
 
 void solve() {
-    int n, k; cin >> n >> k;
-    vt<operation> ops(k);
-    For(i, k) {
-        cin >> ops[i].type;
-        if (ops[i].type == '?') {
-            continue;
+    int n, q_cnt; cin >> n >> q_cnt;
+    dynamic_connectivity dc = dynamic_connectivity(n, q_cnt);
+    dc.input();
+    dc.go();
+    vt<bool> ans = dc.get_ans();
+    for (bool x : ans) {
+        if (x) {
+            cout << "YES" << endl;
+        } else {
+            cout << "NO" << endl;
         }
-        cin >> ops[i].a >> ops[i].b; ops[i].a--, ops[i].b--;
     }
-    dynamic_connectivity dc = dynamic_connectivity(n, k);
-    vt<int> ans = dc.get_ans(ops);
-    print(ans);
 }
 
 int main() {
