@@ -57,10 +57,10 @@ struct DSU {
         cnt++;
         if (sz[v] > sz[u]) {
             par[u] = v;
-            sz[u] += sz[v];
+            sz[v] += sz[u];
         } else {
             par[v] = u;
-            sz[v] +=sz[u];
+            sz[u] +=sz[v];
         }
 
         return true;

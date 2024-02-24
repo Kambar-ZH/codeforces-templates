@@ -106,7 +106,7 @@ struct seg_tree_push {
         return _get(0, 0, n - 1, l, r);
     }
 
-	void _update(int x, int lx, int rx, int l, int r, node & val) {
+	void _update(int x, int lx, int rx, int l, int r, N & val) {
         if (r < lx || rx < l) {
             return;
         }
@@ -126,7 +126,7 @@ struct seg_tree_push {
         tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
     }
 
-    void update(int l, int r, node & val) {
+    void update(int l, int r, N & val) {
         _update(0, 0, n - 1, l, r, val);
     }
 };
