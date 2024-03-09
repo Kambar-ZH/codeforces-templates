@@ -41,7 +41,7 @@ struct node {
 };
 
 template<typename T>
-struct tree {
+struct lca_tree {
     int N, L;
     vt<int> par, depth;
     vt<T> val;
@@ -50,7 +50,9 @@ struct tree {
     int timer;
     vt<int> in, out;
 
-    tree(int N) {
+    lca_tree() {}
+
+    lca_tree(int N) {
         this->N      = N;
         this->L      = log2(N) + 2;
         this->par    = vt<int> (N, -1);
@@ -61,7 +63,7 @@ struct tree {
         this->timer  = 0;
     }
 
-    tree(vt<T> val) {
+    lca_tree(vt<T> val) {
         this->N      = val.size();
         this->L      = log2(N) + 2;
         this->par    = vt<int> (N, -1);
@@ -216,7 +218,7 @@ void solve() {
         g[x].push_back(i + 1);
         val[i + 1] = node(y);
     }
-    tree<node> t = tree<node>(val);
+    lca_tree<node> t = lca_tree<node>(val);
     t.dfs(0, -1, g);
     t.calc_dp_par();
     t.calc_dp_val();
