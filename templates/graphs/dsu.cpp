@@ -60,7 +60,7 @@ struct DSU {
             sz[v] += sz[u];
         } else {
             par[v] = u;
-            sz[u] +=sz[v];
+            sz[u] += sz[v];
         }
 
         return true;
