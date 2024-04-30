@@ -15,7 +15,7 @@ using namespace std;
 #define ll                  long long
 
 const int MAX = 1e9;
-const int MOD = 1e9+7;
+const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 

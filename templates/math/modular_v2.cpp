@@ -15,17 +15,13 @@ using namespace std;
 #define ll                  long long
 #define um                  unordered_map
 
-template<typename T>
-void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
-template<typename T>
-void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
-template<typename T>
-void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
-template<typename T>
-void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
+template<typename T> void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
+template<typename T> void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
+template<typename T> void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
+template<typename T> void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
 const int MAX = 1e9;
-const int MOD = 1e9+7;
+const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 

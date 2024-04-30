@@ -66,7 +66,7 @@ void read2(vt<vt<T> > & a) {
 }
 
 const int MAX = 1e9;
-const int MOD = 1e9+7;
+const int MOD = 1000000007;
 const int BINT = 32;
 const int BLONG = 64;
 const ll  INF = 1e18;

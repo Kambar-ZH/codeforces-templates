@@ -44,14 +44,10 @@ sim dor(const c&) { ris; }
 };
 #define imie(...) " [" << #__VA_ARGS__ ": " << (__VA_ARGS__) << "] "
 
-template<typename T>
-void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
-template<typename T>
-void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
-template<typename T>
-void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
-template<typename T>
-void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
+template<typename T> void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
+template<typename T> void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
+template<typename T> void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
+template<typename T> void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
 const int MAX = 1e9;
 const int MOD = 998244353;

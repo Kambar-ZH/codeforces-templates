@@ -14,14 +14,10 @@ using namespace std;
 #define vt                  vector
 #define ll                  long long
 
-template<typename T>
-void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
-template<typename T>
-void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
-template<typename T>
-void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
-template<typename T>
-void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
+template<typename T> void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
+template<typename T> void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
+template<typename T> void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
+template<typename T> void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
 struct graph {
     int n, m, timer, max_color;
