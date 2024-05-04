@@ -233,21 +233,6 @@ struct hld {
         }
         modify(edge.second, val);
     }
-
-    void modify_range(int v, int u, N val) {
-        while (path[u] != path[v]) {
-            if (depth[top[path[u]]] < depth[top[path[v]]]) {
-                swap(u, v);
-            }
-            int start = top[path[u]];
-            seg_tree.update(num[start], num[u], val);
-            u = par[start];
-        }
-        if (depth[u] > depth[v]) {
-            swap(u, v);
-        }
-        seg_tree.update(num[u], num[v], val);
-    }
 };
 
 void solve() {

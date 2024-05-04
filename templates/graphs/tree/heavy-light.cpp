@@ -174,8 +174,31 @@ struct hld {
         return res;
     }
 
-    void modify(int node, int add){
-        seg_tree.update(num[node], num[node], add);
+    void modify(int node, int val){
+        seg_tree.update(num[node], num[node], val);
+    }
+
+    void modify_edge(pii edge, int val) {
+        if (depth[edge.first] > depth[edge.second]) {
+            modify(edge.first, val);
+            return;
+        }
+        modify(edge.second, val);
+    }
+
+    void modify_range(int v, int u, int val) {
+        while (path[u] != path[v]) {
+            if (depth[top[path[u]]] < depth[top[path[v]]]) {
+                swap(u, v);
+            }
+            int start = top[path[u]];
+            seg_tree.update(num[start], num[u], val);
+            u = par[start];
+        }
+        if (depth[u] > depth[v]) {
+            swap(u, v);
+        }
+        seg_tree.update(num[u], num[v], val);
     }
 };
 

@@ -66,27 +66,27 @@ struct Calculator {
         nxt = _nxt;
     }
 
-    void addLeft() {
+    void add_left() {
         ans += nxt[l - 1] > r;
         l--;
     }
 
-    void addRight() {
+    void add_right() {
         ans += pre[r + 1] < l;
         r++;
     }
 
-    void removeLeft() {
+    void remove_left() {
         ans -= nxt[l] > r;
         l++;
     }
 
-    void removeRight() {
+    void remove_right() {
         ans -= pre[r] < l;
         r--;
     }
 
-    int getAns() {
+    int get_ans() {
         return ans;
     }
 };
@@ -115,11 +115,11 @@ struct MO {
 
         // invariant: data structure will always reflect the range [curL, curR]
         for (Query q : queries) {
-            while (c.l > q.l) c.addLeft();
-            while (c.r < q.r) c.addRight();
-            while (c.l < q.l) c.removeLeft();
-            while (c.r > q.r) c.removeRight();
-            answers[q.idx] = c.getAns();
+            while (c.l > q.l) c.add_left();
+            while (c.r < q.r) c.add_right();
+            while (c.l < q.l) c.remove_left();
+            while (c.r > q.r) c.remove_right();
+            answers[q.idx] = c.get_ans();
         }
 
         return answers;

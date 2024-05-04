@@ -30,7 +30,7 @@ struct DSU {
 
     DSU(int n) {
         this->n = n;
-        cnt = 1;
+        cnt = n;
         par = vt<int> (n); iota(all(par), 0);
         sz = vt<int> (n, 1);
     }
@@ -43,14 +43,14 @@ struct DSU {
         return par[v] = find(par[v]);
     }
 
-    bool merge(int v, int u) {
-        v = find(v);
+    bool merge(int u, int v) {
         u = find(u);
+        v = find(v);
         if (u == v) {
             return false;
         }
 
-        cnt++;
+        cnt--;
         if (sz[v] > sz[u]) {
             par[u] = v;
             sz[v] += sz[u];
@@ -63,7 +63,7 @@ struct DSU {
     }
 
     bool is_connected() {
-        return cnt == n;
+        return cnt == 1;
     }
 };
 

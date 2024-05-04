@@ -24,20 +24,20 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct node {
+struct Node {
 	ll value;
-	node() : value(MAX) {};
+	Node() : value(MAX) {};
 
-	node(ll value) : value(value) {};
+	Node(ll value) : value(value) {};
 
-	static node merge(node & n1, node & n2) {
-		node r(min(n1.value, n2.value));
+	static Node merge(Node & n1, Node & n2) {
+		Node r(min(n1.value, n2.value));
 		return r;
 	}
 };
 
 template<typename T>
-struct lca_tree {
+struct LcaTree {
     int N, L;
     vt<int> par, depth;
     vt<T> val;
@@ -46,9 +46,9 @@ struct lca_tree {
     int timer;
     vt<int> in, out;
 
-    lca_tree() {}
+    LcaTree() {}
 
-    lca_tree(int N) {
+    LcaTree(int N) {
         this->N      = N;
         this->L      = log2(N) + 2;
         this->par    = vt<int> (N, -1);
@@ -59,7 +59,7 @@ struct lca_tree {
         this->timer  = 0;
     }
 
-    lca_tree(vt<T> val) {
+    LcaTree(vt<T> val) {
         this->N      = val.size();
         this->L      = log2(N) + 2;
         this->par    = vt<int> (N, -1);
@@ -208,13 +208,13 @@ struct lca_tree {
 void solve() {
     int n; cin >> n;
     vt<vt<int> > g(n);
-    vt<node> val(n);
+    vt<Node> val(n);
     For(i, n - 1) {
         int x, y; cin >> x >> y; x--;
         g[x].push_back(i + 1);
-        val[i + 1] = node(y);
+        val[i + 1] = Node(y);
     }
-    lca_tree<node> t = lca_tree<node>(val);
+    LcaTree<Node> t = LcaTree<Node>(val);
     t.dfs(0, -1, g);
     t.calc_dp_par();
     t.calc_dp_val();
