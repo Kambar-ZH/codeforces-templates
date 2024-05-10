@@ -25,12 +25,12 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct DSU {
-    int n, cnt;
+    int n, components_cnt;
     vt<int> par, sz;
 
     DSU(int n) {
         this->n = n;
-        cnt = n;
+        components_cnt = n;
         par = vt<int> (n); iota(all(par), 0);
         sz = vt<int> (n, 1);
     }
@@ -50,7 +50,7 @@ struct DSU {
             return false;
         }
 
-        cnt--;
+        components_cnt--;
         if (sz[v] > sz[u]) {
             par[u] = v;
             sz[v] += sz[u];
@@ -63,7 +63,7 @@ struct DSU {
     }
 
     bool is_connected() {
-        return cnt == 1;
+        return components_cnt == 1;
     }
 };
 

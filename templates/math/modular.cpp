@@ -24,76 +24,100 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct modular {
-private:
-    int N = 2e5, MOD;
-    vt<ll> f, f_inv;
-
-    void precalc_f() {
-        f[0] = 1, f[1] = 1;
-        for (int i = 2; i < f.size(); i++) {
-            f[i] = (f[i - 1] * i) % MOD;
+namespace Modular {
+    struct Mint {
+        ll x;
+        Mint():x(0){}
+        Mint(ll x):x((x%MOD+MOD)%MOD){}
+        Mint& fix() { x = (x%MOD+MOD)%MOD; return *this;}
+        Mint operator-() const { return Mint(0) - *this;}
+        Mint operator~() const { return Mint(1) / *this;}
+        Mint& operator+=(const Mint& a){ if((x+=a.x)>=MOD) x-=MOD; return *this;}
+        Mint& operator-=(const Mint& a){ if((x+=MOD-a.x)>=MOD) x-=MOD; return *this;}
+        Mint& operator*=(const Mint& a){ (x*=a.x)%=MOD; return *this;}
+        Mint& operator/=(const Mint& a){ (x*=a.ex(MOD-2).x)%=MOD; return *this;}
+        Mint& operator&=(const Mint& a){ x &= 1; return *this;}
+        Mint operator+(const Mint& a)const{ return Mint(*this) += a;}
+        Mint operator-(const Mint& a)const{ return Mint(*this) -= a;}
+        Mint operator*(const Mint& a)const{ return Mint(*this) *= a;}
+        Mint operator/(const Mint& a)const{ return Mint(*this) /= a;}
+        Mint operator&(const Mint& a)const{ return Mint(*this) &= a;}
+        Mint ex(ll t) const {
+            if(!t) return 1;
+            Mint res = ex(t/2);
+            res *= res;
+            return (t&1)?res*x:res;
         }
-        for (int i = 0; i < f_inv.size(); i++) {
-            f_inv[i] = inv(f[i]);
-        }
-    }
+        bool operator<(const Mint& a)const{ return x < a.x;}
+        bool operator==(const Mint& a)const{ return x == a.x;}
 
-public:
-    modular() {}
-
-    modular(int MOD) {
-        this->MOD = MOD;
-        this->f = vt<ll> (min(N, MOD));
-        this->f_inv = vt<ll> (min(N, MOD));
-        this->precalc_f();
+        Mint ex(Mint x, ll t) { return x.ex(t);}
     };
 
-    ll bp(ll a, ll b) {
-        if (b == 0) return 1;
-        if (b == 1) return a;
-        if (b & 1) return a * bp(a, b - 1) % MOD;
-        ll tmp = bp(a, b / 2);
-        return tmp * tmp % MOD;    
-    }
+    istream& operator>>(istream&i,Mint&a){i>>a.x;return i;}
+    ostream& operator<<(ostream&o,const Mint&a){o<<a.x % MOD;return o;}
 
-    ll inv(ll n) {
-        return bp(n, MOD - 2);
-    }
+    struct Math {
+        int N;
+        vt<Mint> f, f_inv;
 
-    ll F(int n) {
-        if (n >= MOD) return 0;
-        return f[n];
-    }
-
-    ll F_INV(int n) {
-        if (n >= MOD) return 0;
-        return f_inv[n];
-    }
-
-    ll C(int n, int k) {
-        if (n < 0) return 0;
-        if (k < 0) return 0;
-        if (n - k < 0) return 0;
-        return F(n) * F_INV(n - k) % MOD * F_INV(k) % MOD;
-    }
-
-    int lucas(int n, int k) {
-        if(k < 0 || k > n) {
-            return 0;
+        Math(int N = 2e5, bool with_precalc_f = false) {
+            this->N = N+1;
+            if (with_precalc_f) precalc_f();
         }
-        
-        if(k == 0 || k == n) {
-            return 1;
+
+        void precalc_f() {
+            f = vt<Mint> (min(N, MOD)), f_inv = vt<Mint> (min(N, MOD));
+            f[0] = 1, f[1] = 1;
+            for (int i = 2; i < f.size(); i++) f[i] = f[i - 1] * i;
+            for (int i = 0; i < f_inv.size(); i++) f_inv[i] = inv(f[i]);
         }
-        
-        if(n >= MOD) {
-            return (lucas(n / MOD, k / MOD) * lucas(n % MOD, k % MOD)) % MOD;
+
+        Mint bp(Mint a, int b) {
+            if (b == 0) return 1;
+            if (b == 1) return a;
+            if (b & 1) return a * bp(a, b - 1);
+            Mint tmp = bp(a, b / 2);
+            return tmp * tmp;
         }
-        
-        return C(n, k);
-    }
+
+        Mint inv(Mint n) {
+            return bp(n, MOD - 2);
+        }
+
+        Mint F(int n) {
+            assert(0 <= n && n < f.size());
+            return f[n];
+        }
+
+        Mint F_INV(int n) {
+            assert(0 <= n && n < f_inv.size());
+            return f_inv[n];
+        }
+
+        Mint C(int n, int k) {
+            if (n < 0) return 0;
+            if (k < 0) return 0;
+            if (n - k < 0) return 0;
+            return F(n) * F_INV(n - k) * F_INV(k);
+        }
+
+        Mint stars_and_bars(int n, int k) {
+            return C(n + k - 1, k - 1);
+        }
+
+        Mint lucas(int n, int k) {
+            if (k < 0 || k > n) return 0;
+            if (k == 0 || k == n) return 1;
+            if (n < MOD) return C(n, k);
+            return (lucas(n / MOD, k / MOD) * lucas(n % MOD, k % MOD));
+        }
+    };
+
+    static Math math = Math();
 };
+
+using namespace Modular;
 
 struct gcd_type { ll x, y, g; };
 gcd_type ext_gcd(ll a, ll b) {
@@ -134,7 +158,7 @@ ll CRT(vt<ll> rem, vt<ll> mod) {
 }
 
 void solve() {
-    modular math = modular(MOD);
+    
 }
 
 int main() {

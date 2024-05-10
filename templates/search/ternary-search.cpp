@@ -24,26 +24,30 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-int ternary_search(int l, int r, function<int(int)> func) {
+template<typename T>
+T ternary_search(ll l, ll r, function<T(ll)> calc) {
     while (l < r) {
-        int m1 = l + (r - l) / 3;
-        int m2 = r - (r - l) / 3;
-        int mn1 = func(m1);
-        int mn2 = func(m2);
-        if (mn1 < mn2) {
+        ll m1 = l + (r - l) / 3, m2 = r - (r - l) / 3;
+        T res1 = calc(m1), res2 = calc(m2);
+        if (res1 > res2) {
             l = m1 + 1;
-        } else if (mn1 > mn2) {
+        } else if (res1 < res2) {
             r = m2 - 1;
         } else {
             l = m1 + 1;
             r = m2 - 1;
         }
     }
-    return func(l);
+    return calc(l);
 }
 
 void solve() {
-    
+    auto calc = [&] (ll m) -> ll {
+        return 0;
+    };
+    ll l = 0, r = 0;
+    ll ans = ternary_search<ll>(l, r, calc);
+    cout << ans << endl;
 }
 
 int main() {
