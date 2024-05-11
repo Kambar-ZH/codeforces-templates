@@ -14,36 +14,6 @@ using namespace std;
 #define vt                  vector
 #define ll                  long long
 
-#define sim template < class c
-#define ris return * this
-#define dor > debug & operator <<
-#define eni(x) sim > typename \
-enable_if<sizeof dud<c>(0) x 1, debug&>::type operator<<(c i) {
-sim > struct rge { c b, e; };
-sim > rge<c> range(c i, c j) { return rge<c>{i, j}; }
-sim > auto dud(c* x) -> decltype(cerr << *x, 0);
-sim > char dud(...);
-#define LOCAL
-struct debug {
-#ifdef LOCAL
-~debug() { cerr << endl; }
-eni(!=) cerr << boolalpha << i; ris; }
-eni(==) ris << range(begin(i), end(i)); }
-sim, class b dor(pair < b, c > d) {
-ris << "(" << d.first << ", " << d.second << ")";
-}
-sim dor(rge<c> d) {
-*this << "[";
-for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
-ris << "]";
-}
-#else
-sim dor(const c&) { ris; }
-#endif
-};
-#define imie(...) " [" << #__VA_ARGS__ ": " << (__VA_ARGS__) << "] "
-
 template<typename T> void read(vt<T> & a) {For(i, a.size()) cin >> a[i];}
 template<typename T> void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
 template<typename T> void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
@@ -57,32 +27,34 @@ const ld  PI  = 3.14159265358979323846;
 struct Calculator {
     int ans = 0;
     int l = 0, r = -1;
-    vt<int> pre, nxt;
 
     Calculator() {}
 
-    Calculator(vt<int> _pre, vt<int> _nxt) {
-        pre = _pre;
-        nxt = _nxt;
+    void add(int idx) {
+        
+    }
+
+    void remove(int idx) {
+
     }
 
     void add_left() {
-        ans += nxt[l - 1] > r;
         l--;
+        add(l);
     }
 
     void add_right() {
-        ans += pre[r + 1] < l;
         r++;
+        add(r);
     }
 
     void remove_left() {
-        ans -= nxt[l] > r;
+        remove(l);
         l++;
     }
 
     void remove_right() {
-        ans -= pre[r] < l;
+        remove(r);
         r--;
     }
 
@@ -90,9 +62,6 @@ struct Calculator {
         return ans;
     }
 };
-
-// block_size should be little more than sqrt(N) by some constant factor 
-int block_size = 500;
 
 struct MO {
     Calculator c;
@@ -103,9 +72,32 @@ struct MO {
 
     struct Query {
         int l, r, idx;
+        int64_t ord;
+
+        Query(int l, int r, int idx) {
+            this->l = l;
+            this->r = r;
+            this->idx = idx;
+            this->ord = gilbert_order(l, r, 21, 0);
+        }
+
+        int64_t gilbert_order(int x, int y, int pow, int rotate) {
+            if (pow == 0) return 0;
+            int hpow = 1 << (pow-1);
+            int seg = (x < hpow) ? ((y < hpow) ? 0 : 3) : ((y < hpow) ? 1 : 2);
+            seg = (seg + rotate) & 3;
+            const int rotateDelta[4] = {3, 0, 0, 1};
+            int nx = x & (x ^ hpow), ny = y & (y ^ hpow);
+            int nrot = (rotate + rotateDelta[seg]) & 3;
+            int64_t subSquareSize = int64_t(1) << (2*pow - 2);
+            int64_t ans = seg * subSquareSize;
+            int64_t add = gilbert_order(nx, ny, pow-1, nrot);
+            ans += (seg == 1 || seg == 2) ? add : (subSquareSize - add - 1);
+            return ans;
+        }
+
         bool operator<(Query other) const {
-            return make_pair(l / block_size, r) <
-                make_pair(other.l / block_size, other.r);
+            return this->ord < other.ord;
         }
     };
 
@@ -127,28 +119,12 @@ struct MO {
 };
 
 void solve() {
-    int n; cin >> n;
-    vt<int> a(n); read(a);
-    vt<int> pre(n, -1), nxt(n, n);
-    unordered_map<int, int> mp;
-    For(i, n) {
-        if (mp.find(a[i]) != mp.end()) {
-            pre[i] = mp[a[i]];
-        }
-        mp[a[i]] = i;
-    }
-    mp.clear();
-    for (int i = n - 1; i >= 0; i--) {
-        if (mp.find(a[i]) != mp.end()) {
-            nxt[i] = mp[a[i]];
-        }
-        mp[a[i]] = i;
-    }
-    Calculator c = Calculator(pre, nxt);
+    int q; cin >> q;
+    
+    Calculator c = Calculator();
     MO mo = MO(c);
     vt<MO::Query> queries;
 
-    int q; cin >> q;
     For(i, q) {
         int l, r; cin >> l >> r; l--, r--;
         queries.push_back(MO::Query{l, r, i});
@@ -160,16 +136,8 @@ void solve() {
     }
 }
 
-// THE SOLUTION IS ALWAYS SIMPLE
-// THE CODE IS ALWAYS SHORT
-
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-#ifdef DEBUG
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
-#endif
-    int T = 1;
-    For(t, T) solve();
+    solve();
     return 0;
 }
