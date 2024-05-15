@@ -54,25 +54,26 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
+// N should be equal to maximum possible sum over all characters of all queries
 const int N = 1e6 + 10, K = 26;
 
-struct vertex {
+struct Vertex {
 	vt<int> next;
     int count = 0;
 };
 
-struct trie {
-	vertex t[N+1];
+struct Trie {
+	Vertex t[N+1];
 	int ver_count;
 
-	trie() {
+	Trie() {
 		t[0].next = vt<int> (K, -1);
 		ver_count = 1;
 	}
 	
-	void add_string(const string & s) {
+	void add(string s) {
 		int v = 0;
-		for (size_t i=0; i<s.length(); ++i) {
+		for (int i = 0; i < s.length(); i++) {
 			char c = s[i]-'a';
 			if (t[v].next[c] == -1) {
                 t[ver_count].next = vt<int> (K, -1);
@@ -83,10 +84,26 @@ struct trie {
 		}
 	}
 
-    ll get_string(const string & s) {
+	void remove(string s) {
+		int v = 0;
+		for (int i = 0; i < s.length(); i++) {
+			char c = s[i]-'a';
+			// in case when remove applied only on existing records 
+			// assert(t[v].next[c] != -1);
+			
+			if (t[v].next[c] == -1) {
+                t[ver_count].next = vt<int> (K, -1);
+				t[v].next[c] = ver_count++;
+			}
+			v = t[v].next[c];
+            t[v].count--;
+		}
+	}
+
+    ll get(string s) {
 		int v = 0;
         ll ans = 0;
-		for (size_t i=0; i<s.length(); ++i) {
+		for (int i = 0; i < s.length(); i++) {
 			char c = s[i]-'a';
 			if (t[v].next[c] == -1) {
                 break;
@@ -101,20 +118,20 @@ struct trie {
 void solve() {
     int n; cin >> n;
     ll sum = 0;
-	trie tr = trie();
+	Trie tr = Trie();
     vt<string> a(n);
 	For(i, n) {
         string s; cin >> s;
         a[i] = s;
         sum += s.length();
         reverse(all(s));
-		tr.add_string(s);
+		tr.add(s);
 	}
 
     ll ans = sum * n;
 
     For(i, n) {
-        ans -= tr.get_string(a[i]);
+        ans -= tr.get(a[i]);
     }
     cout << 2 * ans << endl;
 }
