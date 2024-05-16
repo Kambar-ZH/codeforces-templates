@@ -25,13 +25,25 @@ const ll  INF = 2e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct Line {
-    ll a, b;
-    Line(ll a, ll b) : a(a), b(b) {}
+    ll k, c;
 
-    ll Y(ll x) {
-        return a * x + b;
-    }
+    Line() {}
+    Line(ll k, ll c) : k(k), c(c) {}
+
+    ll Y(ll x) {return k * x + c;}
 };
+
+struct Maxer {
+    ll zero_value = -INF;
+    ll merge(ll ls, ll rs) {return max(ls, rs);}
+    ll need_swap(ll a, ll b) {return a > b;}
+} func;
+
+// struct Miner {
+//     ll zero_value = INF;
+//     ll merge(ll ls, ll rs) {return min(ls, rs);}
+//     ll need_swap(ll a, ll b) {return a < b;}
+// } func;
 
 struct Node {
     Line line;
@@ -45,8 +57,8 @@ struct Node {
         }
         int m = (l + r) >> 1;
         if (L <= l && r <= R) {
-            bool lef = new_line.Y(l) < line.Y(l);
-            bool mid = new_line.Y(m) < line.Y(m);
+            bool lef = func.need_swap(new_line.Y(l), line.Y(l));
+            bool mid = func.need_swap(new_line.Y(m), line.Y(m));
             if (mid) {
                 swap(line, new_line);
             }
@@ -61,53 +73,52 @@ struct Node {
             return;
         }
         if (max(l, L) <= min(m, R)) {
-            if (left == nullptr) left = new Node(Line(0, INF));
+            if (left == nullptr) left = new Node(Line(0, func.zero_value));
             left->add_segment(l, m, L, R, new_line);
         } 
         if (max(m + 1, L) <= min(r, R)) {
-            if (right == nullptr) right = new Node(Line(0, INF));
+            if (right == nullptr) right = new Node(Line(0, func.zero_value));
             right->add_segment(m + 1, r, L, R, new_line);
         }
     }
 
     ll query_segment(int l, int r, int L, int R, int x) {
         if (l > r || r < L || R < l) {
-            return INF;
+            return func.zero_value;
         }
         int m = (l + r) >> 1;
         if (L <= l && r <= R) {
             ll ans = line.Y(x);
             if (l < r) {
-                if (x <= m && left != nullptr) ans = min(ans, left->query_segment(l, m, L, R, x));
-                else if (x > m && right != nullptr) ans = min(ans, right->query_segment(m + 1, r, L, R, x));
+                if (x <= m && left != nullptr) ans = func.merge(ans, left->query_segment(l, m, L, R, x));
+                else if (x > m && right != nullptr) ans = func.merge(ans, right->query_segment(m + 1, r, L, R, x));
             }
             return ans;
         }
-        // not tested
-        ll ans = INF;
+        ll ans = func.zero_value;
         if (max(l, L) <= x && x <= min(m, R)) {
-            if (left != nullptr) ans = min(ans, left->query_segment(l, m, L, R, x));
+            if (left != nullptr) ans = func.merge(ans, left->query_segment(l, m, L, R, x));
         } 
         if (max(m + 1, L) <= x && x <= min(r, R)) {
-            if (right != nullptr) ans = min(ans, right->query_segment(m + 1, r, L, R, x));
+            if (right != nullptr) ans = func.merge(ans, right->query_segment(m + 1, r, L, R, x));
         }
         return ans;
     }
 };
 
 struct LiChaoTree {
-    ll L, R;
+    int L, R;
     Node *root = nullptr;
 
     LiChaoTree() {
-        L = -INF, R = INF, root = new Node(Line(0, INF));
+        L = 0, R = MAX, root = new Node(Line(0, func.zero_value));
     }
 
     void add_line(Line line) {
         root->add_segment(L, R, L, R, line);
     }
 
-    // [l, r]
+    // [l, r] inclusive
     void add_segment(int l, int r, Line line) {
         root->add_segment(L, R, l, r, line);
     }

@@ -117,7 +117,7 @@ struct seg_tree_single {
 		tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
 	}
 
-    void update(int id, N & v) {
+    void update(int id, N v) {
 		_update(0, 0, n - 1, id, v);
 	}
 };
