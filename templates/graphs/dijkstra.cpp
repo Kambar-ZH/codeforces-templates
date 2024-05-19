@@ -24,41 +24,34 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct dijkstra {
-	vt<vt<pii> > g;
-
-	dijkstra(vt<vt<pii> > g) {
-		this->g = g;
-	}
+vt<ll> dijkstra(int s, vt<vt<pii> > & g) {
+	int n = g.size();
+	vt<ll> dist(n, INF);
+	// vt<int> p(n, -1);
+	dist[s] = 0;
+	priority_queue<pair<ll, int> > q;
+	q.push(make_pair(0, s));
 	
-	vt<ll> get_dist_from(int s) {
-		int n = g.size();
-		vt<ll> dist(n, INF), p(n);
-		dist[s] = 0;
-		priority_queue<pair<ll, int> > q;
-		q.push(make_pair(0, s));
+	while (!q.empty()) {
+		int v = q.top().second;
+		ll cur_d = -q.top().first;
+		q.pop();
 		
-		while (!q.empty()) {
-			int v = q.top().second;
-			ll cur_d = -q.top().first;
-			q.pop();
-			
-			if (cur_d > dist[v])  continue;
-	
-			for (int j = 0; j < g[v].size(); ++j) {
-				int to = g[v][j].first,
-					len = g[v][j].second;
-				if (dist[v] + len < dist[to]) {
-					dist[to] = dist[v] + len;
-					p[to] = v;
-					q.push(make_pair(-dist[to], to));
-				}
+		if (cur_d > dist[v])  continue;
+
+		for (int j = 0; j < g[v].size(); ++j) {
+			int to = g[v][j].first,
+				len = g[v][j].second;
+			if (dist[v] + len < dist[to]) {
+				dist[to] = dist[v] + len;
+				// p[to] = v;
+				q.push(make_pair(-dist[to], to));
 			}
 		}
-
-		return dist;
 	}
-};
+
+	return dist;
+}
 
 void solve() {
     int n, m; cin >> n >> m;
@@ -69,8 +62,7 @@ void solve() {
 		g[u].push_back({v, d});
 		g[v].push_back({u, d});
 	}
-	dijkstra d = dijkstra(g);
-    vt<ll> dist = d.get_dist_from(s);
+    vt<ll> dist = dijkstra(0, g);
     cout << dist[f] << endl;
 }
 
