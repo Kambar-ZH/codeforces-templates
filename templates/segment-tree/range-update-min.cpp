@@ -25,35 +25,38 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct seg_tree_push {
+	const int NO_PUSH = -MAX;
+
 	int n;
-	vt<ll> tree, lazy;
+	vt<int> lazy, tree;
 
     seg_tree_push() {}
-	
-    seg_tree_push(int n) {
+
+	seg_tree_push(int n) {
 		this->n = n;
-		tree.resize(4 * n);
-		lazy.resize(4 * n);
+		tree.resize(4 * n, MAX);
+		lazy.resize(4 * n, NO_PUSH);
 	}
- 
+
 	void push(int x, int lx, int rx) {
-        if (lazy[x] == 0) return;
-        lazy[ls(x)] += lazy[x];
-        lazy[rs(x)] += lazy[x];
-        tree[ls(x)] += lazy[x];
-        tree[rs(x)] += lazy[x];
-        lazy[x] = 0;
+        if (lazy[x] == NO_PUSH) return;
+        if (lx != rx) {
+            lazy[ls(x)] = lazy[x];
+            lazy[rs(x)] = lazy[x];
+        }
+        tree[x] = lazy[x];
+		lazy[x] = NO_PUSH;
     }
 
-    ll _get(int x, int lx, int rx, int l, int r) {
-        if (l == lx && rx == r) {
-            return tree[x];
-        }
+	ll _get(int x, int lx, int rx, int l, int r) {
+		push(x, lx, rx);
 
-        push(x, lx, rx);
+		if (l == lx && rx == r) {
+			return tree[x];
+		}
 
-        int mx = (lx + rx) >> 1;
-        
+		int mx = (lx + rx) >> 1;
+
         if (r <= mx) {
             return _get(ls(x), lx, mx, l, r);
         }
@@ -61,24 +64,22 @@ struct seg_tree_push {
             return _get(rs(x), mx + 1, rx, l, r);
         }
 
-        return max(
-            _get(ls(x), lx, mx, l, mx), 
-            _get(rs(x), mx + 1, rx, mx + 1, r)
-        );
-    }
+		return min(_get(ls(x), lx, mx, l, mx),
+			_get(rs(x), mx + 1, rx, mx + 1, r));
+	}
 
     ll get(int l, int r) {
         return _get(0, 0, n - 1, l, r);
     }
 
-    void _update(int x, int lx, int rx, int l, int r, int addend) {
+	void _update(int x, int lx, int rx, int l, int r, int value) {
         if (r < lx || rx < l) {
             return;
         }
         
         if (l == lx && rx == r) {
-            lazy[x] += addend;
-            tree[x] += addend;
+            lazy[x] = value;
+            push(x, lx, rx);
             return;
         }
         
@@ -86,14 +87,14 @@ struct seg_tree_push {
 
         int mx = (lx + rx) >> 1;
         
-        _update(ls(x), lx, mx, l, min(r, mx), addend);
-        _update(rs(x), mx + 1, rx, max(l, mx + 1), r, addend);
+        _update(ls(x), lx, mx, l, min(r, mx), value);
+        _update(rs(x), mx + 1, rx, max(l, mx + 1), r, value);
 
-        tree[x] = max(tree[ls(x)], tree[rs(x)]);
+        tree[x] = min(tree[ls(x)], tree[rs(x)]);
     }
 
-    void update(int l, int r, int addend) {
-        _update(0, 0, n - 1, l, r, addend);
+    void update(int l, int r, int value) {
+        _update(0, 0, n - 1, l, r, value);
     }
 };
 
