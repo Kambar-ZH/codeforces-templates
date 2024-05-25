@@ -61,13 +61,15 @@ namespace Modular {
         int N;
         vt<Mint> f, f_inv;
 
-        Math(int N = 2e5, bool with_precalc_f = false) {
+        Math() {}
+
+        Math(int N) {
             this->N = N+1;
-            if (with_precalc_f) precalc_f();
+            precalc_f();
         }
 
         void precalc_f() {
-            f = vt<Mint> (min(N, MOD)), f_inv = vt<Mint> (min(N, MOD));
+            f = vt<Mint> (N), f_inv = vt<Mint> (N);
             f[0] = 1, f[1] = 1;
             for (int i = 2; i < f.size(); i++) f[i] = f[i - 1] * i;
             for (int i = 0; i < f_inv.size(); i++) f_inv[i] = inv(f[i]);
@@ -114,7 +116,7 @@ namespace Modular {
         }
     };
 
-    static Math math = Math();
+    static Math math = Math(2e5);
 };
 
 using namespace Modular;

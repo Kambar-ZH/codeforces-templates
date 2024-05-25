@@ -17,7 +17,7 @@ using namespace std;
 struct node {
 	ll sum, pref, suff, ans;
     node() {}
-	node(ll value) {
+	node(ll sum) {
         this->sum = sum;
         this->pref = this->suff = this->ans = max(0LL, sum);
     }
