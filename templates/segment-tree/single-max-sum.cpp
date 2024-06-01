@@ -35,6 +35,28 @@ struct summer {
 	}
 };
 
+template<typename N>
+struct prefixer {
+	static N merge(N & n1, N & n2) {
+        N r;
+        r.sum = n1.sum + n2.sum;
+        r.pref = max (n1.pref, n1.sum + n2.pref);
+        r.ans = r.pref;
+		return r;
+	}
+};
+
+template<typename N>
+struct suffixer {
+	static N merge(N & n1, N & n2) {
+        N r;
+        r.sum = n1.sum + n2.sum;
+        r.suff = max (n2.suff, n2.sum + n1.suff);
+        r.ans = r.suff;
+		return r;
+	}
+};
+
 void solve() {
     
 }
