@@ -91,7 +91,7 @@ struct SmallToLarge {
         }
         for (int to : g[u]) {
             if (to == p || to == big_child) continue;
-            for (int i = tin[u]; i <= tout[u]; i++) {
+            for (int i = tin[to]; i <= tout[to]; i++) {
                 add(ver[i]);
             }
         }
@@ -103,8 +103,8 @@ struct SmallToLarge {
         if (!keep) {
             for (int i = tin[u]; i <= tout[u]; i++) {
                 remove(ver[i]);
-                clear();
             }
+            clear();
         }
     };
     
