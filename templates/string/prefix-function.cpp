@@ -39,6 +39,15 @@ vt<int> prefix_function(string s) {
 	return p;
 }
 
+int shortest_period(vt<int> & p) {
+    int n = p.size();
+    int period = n - p[n - 1];
+    if (n % period == 0) {
+        return period;
+    }
+    return n;
+}
+
 void solve() {
     
 }
