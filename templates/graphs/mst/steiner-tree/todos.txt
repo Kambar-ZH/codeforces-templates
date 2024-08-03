@@ -1,0 +1,1 @@
+1. Find how to recover answer better then bitsets
