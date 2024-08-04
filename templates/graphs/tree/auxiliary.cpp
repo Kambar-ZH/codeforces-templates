@@ -7,7 +7,7 @@ using namespace std;
 #define rall(x)             (x).rbegin(),(x).rend()
 #define ls(x)               x+x+1
 #define rs(x)               x+x+2
-#define endl                '\n'
+// #define endl                '\n'
 
 #define ld                  long double
 #define pii                 pair<int, int>
@@ -60,6 +60,8 @@ struct tree {
     vt<vt<int> > dp_par; // dp_par[0] is itself
     int timer;
     vt<int> in, out;
+
+    tree() {}
 
     tree(int N) {
         this->N      = N;
@@ -164,18 +166,19 @@ struct auxiliary_tree {
 struct tree_auxiliarator {
     int n;
     vt<vt<int> > g;
+    tree t;
 
     tree_auxiliarator() {}
 
     tree_auxiliarator(vt<vt<int> > g) {
         this->n = g.size();
         this->g = g;
+        this->t = tree(this->n);
+        this->t.dfs(0, -1, this->g);
+        this->t.calc_dp_par();
     }
 
     auxiliary_tree auxiliarate(vt<int> important_vertices) {
-        tree t = tree(n);
-        t.dfs(0, -1, g);
-        t.calc_dp_par();
         vt<int> auxiliary_vertices = important_vertices;
         int sz = auxiliary_vertices.size();
         if (sz == 0) return auxiliary_tree();
@@ -204,20 +207,57 @@ struct tree_auxiliarator {
     }
 };
 
+// https://atcoder.jp/contests/abc359/tasks/abc359_g
+// https://atcoder.jp/contests/abc340/tasks/abc340_g
+
 void solve() {
     int n; cin >> n;
-    vt<int> color(n); read(color);
     vt<vt<int> > g(n);
     For(i, n - 1) {
         int x, y; cin >> x >> y; x--, y--;
         g[x].push_back(y);
         g[y].push_back(x);
     }
-    tree_auxiliarator ti
+    vt<int> color(n); read(color);
+    map<int, vt<int> > groups;
+    For(i, n) {
+        groups[color[i]].push_back(i);
+    }
+    tree_auxiliarator ta = tree_auxiliarator(g);
+    ll ans = 0;
+    for (auto [c, group] : groups) {
+        auto at = ta.auxiliarate(group);
+        int n = at.auxiliary_vertices.size();
+        vt<ll> dp(n), dp_cnt(n);
+        auto dfs = [&] (auto dfs, int u) -> void {
+            for (int v : at.g[u]) {
+                dfs(dfs, v);
+                dp[u] += dp[v];
+                dp_cnt[u] += dp_cnt[v];
+            }
+            if (at.is_important[at.auxiliary_vertices[u]]) {
+                dp[u] += ta.t.depth[at.vertex(u)];
+                dp_cnt[u] += 1;
+            }
+        };
+        dfs(dfs, 0);
+        ll res = 0;
+        auto go = [&] (auto go, int u, ll top) -> void {
+            if (at.is_important[at.auxiliary_vertices[u]]) {
+                ll temp = dp[u] - ta.t.depth[at.vertex(u)] * dp_cnt[u] + top;
+                res += temp;
+            }
+            for (int v : at.g[u]) {
+                ll add_other_childs = (dp[u] - dp[v]) - (dp_cnt[u] - dp_cnt[v]) * 1LL * ta.t.depth[at.vertex(u)];
+                ll add_pars = (dp_cnt[0] - dp_cnt[v]) * (ta.t.depth[at.vertex(v)] - ta.t.depth[at.vertex(u)]);
+                go(go, v, top + add_pars + add_other_childs);
+            }
+        };
+        go(go, 0, 0);
+        ans += res;
+    }
+    cout << ans / 2 << endl;
 }
-
-// Problem:
-// https://atcoder.jp/contests/abc340/tasks/abc340_g
 
 // THE SOLUTION IS ALWAYS SIMPLE
 // THE CODE IS ALWAYS SHORT
