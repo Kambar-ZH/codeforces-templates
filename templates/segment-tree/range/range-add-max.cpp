@@ -24,34 +24,38 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct seg_tree_push {
+struct SegTreePush {
 	int n;
-	vt<ll> tree, lazy;
+	vt<ll> tree;
+    vt<ll> lazy;
 
-    seg_tree_push() {}
+    SegTreePush() {}
 	
-    seg_tree_push(int n) {
+    SegTreePush(int n) {
 		this->n = n;
 		tree.resize(4 * n);
 		lazy.resize(4 * n);
 	}
- 
-	void push(int x, int lx, int rx) {
+
+    void push_to_node(int x, int lx, int rx, ll k) {
+        tree[x] += k;
+        lazy[x] += k;
+    }
+
+    void push_to_childs(int x, int lx, int rx) {
         if (lazy[x] == 0) return;
-        if (lx != rx) {
-            lazy[ls(x)] = (lazy[ls(x)] + lazy[x]);
-            lazy[rs(x)] = (lazy[rs(x)] + lazy[x]);
-        }
-        tree[x] = (tree[x] + lazy[x]);
+        int mx = (lx + rx) >> 1;
+        push_to_node(ls(x), lx, mx, lazy[x]);
+        push_to_node(rs(x), mx+1, rx, lazy[x]);
         lazy[x] = 0;
     }
 
     ll _get(int x, int lx, int rx, int l, int r) {
-        push(x, lx, rx);
-
         if (l == lx && rx == r) {
             return tree[x];
         }
+
+        push_to_childs(x, lx, rx);
 
         int mx = (lx + rx) >> 1;
         
@@ -72,18 +76,17 @@ struct seg_tree_push {
         return _get(0, 0, n - 1, l, r);
     }
 
-    void _update(int x, int lx, int rx, int l, int r, int addend) {
+    void _update(int x, int lx, int rx, int l, int r, ll addend) {
         if (r < lx || rx < l) {
             return;
         }
         
         if (l == lx && rx == r) {
-            lazy[x] += addend;
-            push(x, lx, rx);
+            push_to_node(x, lx, rx, addend);
             return;
         }
         
-        push(x, lx, rx);
+        push_to_childs(x, lx, rx);
 
         int mx = (lx + rx) >> 1;
         
@@ -100,7 +103,7 @@ struct seg_tree_push {
 
 void solve() {
     int n; cin >> n;
-    seg_tree_push tree = seg_tree_push(n);
+    SegTreePush tree = SegTreePush(n);
 }
 
 int main() {
