@@ -24,14 +24,14 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct node {
+struct Node {
 	ll value;
-	node() : value(0) {}
-	node(ll value) : value(value) {}
+	Node() : value(0) {}
+	Node(ll value) : value(value) {}
 };
 
 template<typename N>
-struct summer {
+struct Summer {
 	static N merge(N & n1, N & n2) {
 		N r(n1.value + n2.value);
 		return r;
@@ -39,20 +39,20 @@ struct summer {
 };
 
 template<typename N, typename M>
-struct seg_tree_single {
+struct SegTreeSingle {
 	int n;
 	vt<N> a, tree;
 
-	seg_tree_single() {}
+	SegTreeSingle() {}
 
-	seg_tree_single(vt<N> a) {
+	SegTreeSingle(vt<N> a) {
 		this->n = a.size(); 
 		this->a = a;
 		this->tree.resize(n << 2);
 		this->build();
 	}
 
-	seg_tree_single(int n) {
+	SegTreeSingle(int n) {
 		this->n = n; 
 		this->tree.resize(n << 2);
 	}
@@ -125,20 +125,20 @@ struct seg_tree_single {
 void solve()
 {
 	int n, m; cin >> n >> m;
-	vt<node> a(n); 
+	vt<Node> a(n); 
 	For(i, n) {
 		cin >> a[i].value;
 	}
-	seg_tree_single<node, summer<node>> tree = seg_tree_single<node, summer<node>>(a);
+	SegTreeSingle<Node, Summer<Node>> tree = SegTreeSingle<Node, Summer<Node>>(a);
 	For(i, m) {
 		int op; cin >> op;
 		if (op == 1) {
 			int id, v; cin >> id >> v; id--;
-			node n = node(v);
+			Node n = Node(v);
 			tree.update(id, n);
 		} else {
 			int l, r; cin >> l >> r; l--, r--;
-			node n = tree.get(l, r);
+			Node n = tree.get(l, r);
 			cout << n.value << endl;
 		}
 	}

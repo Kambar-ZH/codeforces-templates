@@ -24,13 +24,13 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct dynamic_mex {
+struct DynamicMex {
     int N;
     set<int> st;
 
-    dynamic_mex() {}
+    DynamicMex() {}
     
-    dynamic_mex(int N) {
+    DynamicMex(int N) {
         this->N = N;
         this->fill();
     }
@@ -57,14 +57,14 @@ struct dynamic_mex {
     }
 };
 
-struct multi_dynamic_mex {
+struct MultiDynamicMex {
     int N;
     set<int> st;
     unordered_map<int, int> cnt;
 
-    multi_dynamic_mex() {}
+    MultiDynamicMex() {}
     
-    multi_dynamic_mex(int N) {
+    MultiDynamicMex(int N) {
         this->N = N;
         this->fill();
     }
@@ -92,13 +92,13 @@ struct multi_dynamic_mex {
     }
 };
 
-struct static_mex {
+struct StaticMex {
     int N;
     vt<bool> used;
 
-	static_mex() {}
+	StaticMex() {}
     
-    static_mex(int N) {
+    StaticMex(int N) {
         this->N = N;
         this->used.assign(N + 1, false);
     }
