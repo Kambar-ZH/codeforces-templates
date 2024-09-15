@@ -25,42 +25,42 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct static_mex {
-    int N;
-    vt<bool> used;
+	int N;
+	vt<bool> used;
 
-    static_mex() {}
-    
-    static_mex(int N) {
-        this->N = N;
-        this->used.assign(N + 1, false);
-    }
+	static_mex() {}
+	
+	static_mex(int N) {
+		this->N = N;
+		this->used.assign(N + 1, false);
+	}
 
-    int mex(const vector<int> & a) {
-        int n = a.size();
-        for (int i = 0; i < n; i++) {
-            if (a[i] <= N) {
-                used[a[i]] = true;
-            }
-        }
-        int result = -1;
-        for (int i = 0; ; i++) {
-            if (!used[i]) {
-                result = i;
-                break;
-            }
-        }
-        for (int i = 0 ; i < n; i++) {
-            if (a[i] <= N) {
-                used[a[i]] = false;
-            }
-        }
-        return result;
-    }
+	int mex(const vector<int> & a) {
+		int n = a.size();
+		for (int i = 0; i < n; i++) {
+			if (a[i] <= N) {
+				used[a[i]] = true;
+			}
+		}
+		int result = -1;
+		for (int i = 0; ; i++) {
+			if (!used[i]) {
+				result = i;
+				break;
+			}
+		}
+		for (int i = 0 ; i < n; i++) {
+			if (a[i] <= N) {
+				used[a[i]] = false;
+			}
+		}
+		return result;
+	}
 };
 
 struct grundy {
 	const int N = 100;
-    static_mex m;
+	static_mex m;
 	vt<int> g;
 
 	grundy() {
@@ -80,7 +80,7 @@ struct grundy {
 		a.push_back(calc(n - 2));
 		for (int i = 2; i <= n - 1; i++) {
 			int XOR = calc(i - 2) ^ calc(n - 1 - i);
-            a.push_back(XOR);
+			a.push_back(XOR);
 		}
 
 		return g[n] = m.mex(a);

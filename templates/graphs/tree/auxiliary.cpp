@@ -35,7 +35,7 @@ ris << "(" << d.first << ", " << d.second << ")";
 sim dor(rge<c> d) {
 *this << "[";
 for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
+	*this << ", " + 2 * (it == d.b) << *it;
 ris << "]";
 }
 #else
@@ -55,220 +55,220 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct tree {
-    int N, L;
-    vt<int> par, depth;
-    vt<vt<int> > dp_par; // dp_par[0] is itself
-    int timer;
-    vt<int> in, out;
+	int N, L;
+	vt<int> par, depth;
+	vt<vt<int> > dp_par; // dp_par[0] is itself
+	int timer;
+	vt<int> in, out;
 
-    tree() {}
+	tree() {}
 
-    tree(int N) {
-        this->N      = N;
-        this->L      = log2(N) + 2;
-        this->par    = vt<int> (N, -1);
-        this->depth  = vt<int> (N);
-        this->in     = vt<int> (N);
-        this->out    = vt<int> (N);
-        this->timer  = 0;
-    }
+	tree(int N) {
+		this->N      = N;
+		this->L      = log2(N) + 2;
+		this->par    = vt<int> (N, -1);
+		this->depth  = vt<int> (N);
+		this->in     = vt<int> (N);
+		this->out    = vt<int> (N);
+		this->timer  = 0;
+	}
 
-    void dfs(int v, int p, vt<vt<int> > & g) {
-        in[v] = ++timer;
-        par[v] = p;
-        if (p != -1) {
-            depth[v] = depth[p] + 1;
-        }
+	void dfs(int v, int p, vt<vt<int> > & g) {
+		in[v] = ++timer;
+		par[v] = p;
+		if (p != -1) {
+			depth[v] = depth[p] + 1;
+		}
 
-        for (int u : g[v]) {
-            if (u == p) continue;
-            dfs(u, v, g);
-        }
+		for (int u : g[v]) {
+			if (u == p) continue;
+			dfs(u, v, g);
+		}
 
-        out[v] = timer;
-    }
+		out[v] = timer;
+	}
 
-    void calc_dp_par() {
-        dp_par = vt<vt<int> >(N, vt<int> (L, -1));
+	void calc_dp_par() {
+		dp_par = vt<vt<int> >(N, vt<int> (L, -1));
 
-        for (int i = 0; i < N; i++) {
-            dp_par[i][0] = i;
-            dp_par[i][1] = par[i];
-        }
+		for (int i = 0; i < N; i++) {
+			dp_par[i][0] = i;
+			dp_par[i][1] = par[i];
+		}
 
-        for (int l = 2; l < L; l++) {
-            for (int i = 0; i < N; i++) {
-                int par = dp_par[i][l - 1];
-                if (par != -1) {
-                    dp_par[i][l] = dp_par[par][l - 1];
-                }
-            }
-        }
-    }
+		for (int l = 2; l < L; l++) {
+			for (int i = 0; i < N; i++) {
+				int par = dp_par[i][l - 1];
+				if (par != -1) {
+					dp_par[i][l] = dp_par[par][l - 1];
+				}
+			}
+		}
+	}
 
-    bool is_par(int v, int p) {
-        return in[p] <= in[v] && out[v] <= out[p];
-    }
+	bool is_par(int v, int p) {
+		return in[p] <= in[v] && out[v] <= out[p];
+	}
 
-    int lca(int node1, int node2) {
-        if (is_par(node2, node1)) {
-            return node1;
-        }
+	int lca(int node1, int node2) {
+		if (is_par(node2, node1)) {
+			return node1;
+		}
 
-        if (is_par(node1, node2)) {
-            return node2;
-        }
+		if (is_par(node1, node2)) {
+			return node2;
+		}
 
-        for (int i = L - 1; i >= 1; i--) {
-            int par = dp_par[node1][i];
-            if (par == -1) continue;
-            if (!is_par(node2, par)) {
-                node1 = par;
-            }
-        }
+		for (int i = L - 1; i >= 1; i--) {
+			int par = dp_par[node1][i];
+			if (par == -1) continue;
+			if (!is_par(node2, par)) {
+				node1 = par;
+			}
+		}
 
-        return par[node1];
-    }
+		return par[node1];
+	}
 };
 
 struct auxiliary_tree {
-    vt<vt<int> > g;
-    vt<int> auxiliary_vertices;
-    vt<int> important_vertices;
-    unordered_map<int, bool> is_important;
+	vt<vt<int> > g;
+	vt<int> auxiliary_vertices;
+	vt<int> important_vertices;
+	unordered_map<int, bool> is_important;
 
-    auxiliary_tree() {}
+	auxiliary_tree() {}
 
-    auxiliary_tree(vt<vt<int> > g, vt<int> auxiliary_vertices, vt<int> important_vertices) {
-        this->g = g;
-        this->auxiliary_vertices = auxiliary_vertices;
-        this->important_vertices = important_vertices;
-        this->fill_is_important();
-    }
+	auxiliary_tree(vt<vt<int> > g, vt<int> auxiliary_vertices, vt<int> important_vertices) {
+		this->g = g;
+		this->auxiliary_vertices = auxiliary_vertices;
+		this->important_vertices = important_vertices;
+		this->fill_is_important();
+	}
 
-    void fill_is_important() {
-        for (int v : important_vertices) {
-            is_important[v] = true;
-        }
-    }
+	void fill_is_important() {
+		for (int v : important_vertices) {
+			is_important[v] = true;
+		}
+	}
 
-    // tree is zero rooted
-    int root() {
-        return 0;
-    }
+	// tree is zero rooted
+	int root() {
+		return 0;
+	}
 
-    // returns original vertex index
-    int vertex(int v) {
-        return auxiliary_vertices[v];
-    }
+	// returns original vertex index
+	int vertex(int v) {
+		return auxiliary_vertices[v];
+	}
 };
 
 struct tree_auxiliarator {
-    int n;
-    vt<vt<int> > g;
-    tree t;
+	int n;
+	vt<vt<int> > g;
+	tree t;
 
-    tree_auxiliarator() {}
+	tree_auxiliarator() {}
 
-    tree_auxiliarator(vt<vt<int> > g) {
-        this->n = g.size();
-        this->g = g;
-        this->t = tree(this->n);
-        this->t.dfs(0, -1, this->g);
-        this->t.calc_dp_par();
-    }
+	tree_auxiliarator(vt<vt<int> > g) {
+		this->n = g.size();
+		this->g = g;
+		this->t = tree(this->n);
+		this->t.dfs(0, -1, this->g);
+		this->t.calc_dp_par();
+	}
 
-    auxiliary_tree auxiliarate(vt<int> important_vertices) {
-        vt<int> auxiliary_vertices = important_vertices;
-        int sz = auxiliary_vertices.size();
-        if (sz == 0) return auxiliary_tree();
-        sort(all(auxiliary_vertices), [&] (int x, int y) {
-            return t.in[x] < t.in[y];
-        });
-        for (int j = 0; j < sz - 1; j++) {
-            int x = auxiliary_vertices[j], y = auxiliary_vertices[j + 1];
-            auxiliary_vertices.push_back(t.lca(x, y));
-        }
-        sort(all(auxiliary_vertices), [&] (int x, int y) {
-            return t.in[x] < t.in[y];
-        });
-        auxiliary_vertices.erase(unique(all(auxiliary_vertices)),auxiliary_vertices.end());
-        vt<int> st = {0};
-        sz = auxiliary_vertices.size();
-        vt<vt<int> > auxiliary_g(sz);
-        for (int j = 1; j < sz; j++) {
-            while (!t.is_par(auxiliary_vertices[j], auxiliary_vertices[st.back()])) {
-                st.pop_back();
-            }
-            auxiliary_g[st.back()].push_back(j);
-            st.push_back(j);
-        }
-        return auxiliary_tree(auxiliary_g, auxiliary_vertices, important_vertices);
-    }
+	auxiliary_tree auxiliarate(vt<int> important_vertices) {
+		vt<int> auxiliary_vertices = important_vertices;
+		int sz = auxiliary_vertices.size();
+		if (sz == 0) return auxiliary_tree();
+		sort(all(auxiliary_vertices), [&] (int x, int y) {
+			return t.in[x] < t.in[y];
+		});
+		for (int j = 0; j < sz - 1; j++) {
+			int x = auxiliary_vertices[j], y = auxiliary_vertices[j + 1];
+			auxiliary_vertices.push_back(t.lca(x, y));
+		}
+		sort(all(auxiliary_vertices), [&] (int x, int y) {
+			return t.in[x] < t.in[y];
+		});
+		auxiliary_vertices.erase(unique(all(auxiliary_vertices)),auxiliary_vertices.end());
+		vt<int> st = {0};
+		sz = auxiliary_vertices.size();
+		vt<vt<int> > auxiliary_g(sz);
+		for (int j = 1; j < sz; j++) {
+			while (!t.is_par(auxiliary_vertices[j], auxiliary_vertices[st.back()])) {
+				st.pop_back();
+			}
+			auxiliary_g[st.back()].push_back(j);
+			st.push_back(j);
+		}
+		return auxiliary_tree(auxiliary_g, auxiliary_vertices, important_vertices);
+	}
 };
 
 // https://atcoder.jp/contests/abc359/tasks/abc359_g
 // https://atcoder.jp/contests/abc340/tasks/abc340_g
 
 void solve() {
-    int n; cin >> n;
-    vt<vt<int> > g(n);
-    For(i, n - 1) {
-        int x, y; cin >> x >> y; x--, y--;
-        g[x].push_back(y);
-        g[y].push_back(x);
-    }
-    vt<int> color(n); read(color);
-    map<int, vt<int> > groups;
-    For(i, n) {
-        groups[color[i]].push_back(i);
-    }
-    tree_auxiliarator ta = tree_auxiliarator(g);
-    ll ans = 0;
-    for (auto [c, group] : groups) {
-        auto at = ta.auxiliarate(group);
-        int n = at.auxiliary_vertices.size();
-        vt<ll> dp(n), dp_cnt(n);
-        auto dfs = [&] (auto dfs, int u) -> void {
-            for (int v : at.g[u]) {
-                dfs(dfs, v);
-                dp[u] += dp[v];
-                dp_cnt[u] += dp_cnt[v];
-            }
-            if (at.is_important[at.auxiliary_vertices[u]]) {
-                dp[u] += ta.t.depth[at.vertex(u)];
-                dp_cnt[u] += 1;
-            }
-        };
-        dfs(dfs, 0);
-        ll res = 0;
-        auto go = [&] (auto go, int u, ll top) -> void {
-            if (at.is_important[at.auxiliary_vertices[u]]) {
-                ll temp = dp[u] - ta.t.depth[at.vertex(u)] * dp_cnt[u] + top;
-                res += temp;
-            }
-            for (int v : at.g[u]) {
-                ll add_other_childs = (dp[u] - dp[v]) - (dp_cnt[u] - dp_cnt[v]) * 1LL * ta.t.depth[at.vertex(u)];
-                ll add_pars = (dp_cnt[0] - dp_cnt[v]) * (ta.t.depth[at.vertex(v)] - ta.t.depth[at.vertex(u)]);
-                go(go, v, top + add_pars + add_other_childs);
-            }
-        };
-        go(go, 0, 0);
-        ans += res;
-    }
-    cout << ans / 2 << endl;
+	int n; cin >> n;
+	vt<vt<int> > g(n);
+	For(i, n - 1) {
+		int x, y; cin >> x >> y; x--, y--;
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+	vt<int> color(n); read(color);
+	map<int, vt<int> > groups;
+	For(i, n) {
+		groups[color[i]].push_back(i);
+	}
+	tree_auxiliarator ta = tree_auxiliarator(g);
+	ll ans = 0;
+	for (auto [c, group] : groups) {
+		auto at = ta.auxiliarate(group);
+		int n = at.auxiliary_vertices.size();
+		vt<ll> dp(n), dp_cnt(n);
+		auto dfs = [&] (auto dfs, int u) -> void {
+			for (int v : at.g[u]) {
+				dfs(dfs, v);
+				dp[u] += dp[v];
+				dp_cnt[u] += dp_cnt[v];
+			}
+			if (at.is_important[at.auxiliary_vertices[u]]) {
+				dp[u] += ta.t.depth[at.vertex(u)];
+				dp_cnt[u] += 1;
+			}
+		};
+		dfs(dfs, 0);
+		ll res = 0;
+		auto go = [&] (auto go, int u, ll top) -> void {
+			if (at.is_important[at.auxiliary_vertices[u]]) {
+				ll temp = dp[u] - ta.t.depth[at.vertex(u)] * dp_cnt[u] + top;
+				res += temp;
+			}
+			for (int v : at.g[u]) {
+				ll add_other_childs = (dp[u] - dp[v]) - (dp_cnt[u] - dp_cnt[v]) * 1LL * ta.t.depth[at.vertex(u)];
+				ll add_pars = (dp_cnt[0] - dp_cnt[v]) * (ta.t.depth[at.vertex(v)] - ta.t.depth[at.vertex(u)]);
+				go(go, v, top + add_pars + add_other_childs);
+			}
+		};
+		go(go, 0, 0);
+		ans += res;
+	}
+	cout << ans / 2 << endl;
 }
 
 // THE SOLUTION IS ALWAYS SIMPLE
 // THE CODE IS ALWAYS SHORT
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 #ifdef DEBUG
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	freopen("input.txt", "r", stdin);
 #endif
-    int T = 1;
-    For(t, T) solve();
-    return 0;
+	int T = 1;
+	For(t, T) solve();
+	return 0;
 }

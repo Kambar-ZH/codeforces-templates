@@ -25,7 +25,7 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 bool has_bit(int mask, int bit) {
-    return (mask >> bit) == 1;
+	return (mask >> bit) == 1;
 }
 
 int get_sign(int mask, int bit) {
@@ -88,7 +88,7 @@ pair<bool, vt<int> > get_signs(vt<int> & a, int target) {
 }
 
 void solve() {
-    int n, target; cin >> n >> target;
+	int n, target; cin >> n >> target;
 	vt<int> a(n); read(a);
 	auto signs = get_signs(a, target);
 	if (signs.first == true) {

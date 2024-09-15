@@ -16,21 +16,21 @@ using namespace std;
 
 struct Node {
 	ll sum, pref, suff, ans;
-    Node() {}
+	Node() {}
 	Node(ll sum) {
-        this->sum = sum;
-        this->pref = this->suff = this->ans = max(0LL, sum);
-    }
+		this->sum = sum;
+		this->pref = this->suff = this->ans = max(0LL, sum);
+	}
 };
 
 template<typename N>
 struct Summer {
 	static N merge(N & n1, N & n2) {
-        N r;
-        r.sum = n1.sum + n2.sum;
-        r.pref = max (n1.pref, n1.sum + n2.pref);
-        r.suff = max (n2.suff, n2.sum + n1.suff);
-        r.ans = max (max (n1.ans, n2.ans), n1.suff + n2.pref);
+		N r;
+		r.sum = n1.sum + n2.sum;
+		r.pref = max (n1.pref, n1.sum + n2.pref);
+		r.suff = max (n2.suff, n2.sum + n1.suff);
+		r.ans = max (max (n1.ans, n2.ans), n1.suff + n2.pref);
 		return r;
 	}
 };
@@ -38,10 +38,10 @@ struct Summer {
 template<typename N>
 struct Prefixer {
 	static N merge(N & n1, N & n2) {
-        N r;
-        r.sum = n1.sum + n2.sum;
-        r.pref = max (n1.pref, n1.sum + n2.pref);
-        r.ans = r.pref;
+		N r;
+		r.sum = n1.sum + n2.sum;
+		r.pref = max (n1.pref, n1.sum + n2.pref);
+		r.ans = r.pref;
 		return r;
 	}
 };
@@ -49,20 +49,20 @@ struct Prefixer {
 template<typename N>
 struct Suffixer {
 	static N merge(N & n1, N & n2) {
-        N r;
-        r.sum = n1.sum + n2.sum;
-        r.suff = max (n2.suff, n2.sum + n1.suff);
-        r.ans = r.suff;
+		N r;
+		r.sum = n1.sum + n2.sum;
+		r.suff = max (n2.suff, n2.sum + n1.suff);
+		r.ans = r.suff;
 		return r;
 	}
 };
 
 void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

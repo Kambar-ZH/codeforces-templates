@@ -30,7 +30,7 @@ void clear(int n) {
 void paint(int v, int color) {
 	colors[v] = color;
 	for (pii pr : g[v]) {
-        int to = pr.first;
+		int to = pr.first;
 		if (colors[to] != 0) continue;
 
 		if (fup[to] > tin[v]) {
@@ -45,7 +45,7 @@ void dfs(int v, int p = -1) {
 	used[v] = true;
 	tin[v] = fup[v] = timer++;
 	for (pii pr : g[v]) {
-        int to = pr.first;
+		int to = pr.first;
 		if (to == p) continue;
 		if (used[to]) {
 			fup[v] = min(fup[v], tin[to]);
@@ -59,11 +59,11 @@ void dfs(int v, int p = -1) {
 void solve()
 {
 	int n, m; cin >> n >> m;
-    clear(n);
+	clear(n);
 	For(i, m) {
 		int f, t;
 		cin >> f >> t; f--, t--;
-        edges[i] = {f + 1, t + 1};
+		edges[i] = {f + 1, t + 1};
 		g[f].push_back({t, i});
 		g[t].push_back({f, i});
 	}
@@ -79,7 +79,7 @@ void solve()
 	}
 	vt<vt<int> > colors2(maxColor);
 	For(v, n) {
-        colors2[colors[v] - 1].push_back(v);
+		colors2[colors[v] - 1].push_back(v);
 	}
 }
  

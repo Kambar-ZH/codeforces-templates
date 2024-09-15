@@ -25,55 +25,55 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct DSU {
-    int n, components_cnt;
-    vt<int> par, sz;
+	int n, components_cnt;
+	vt<int> par, sz;
 
-    DSU(int n) {
-        this->n = n;
-        components_cnt = n;
-        par = vt<int> (n); iota(all(par), 0);
-        sz = vt<int> (n, 1);
-    }
+	DSU(int n) {
+		this->n = n;
+		components_cnt = n;
+		par = vt<int> (n); iota(all(par), 0);
+		sz = vt<int> (n, 1);
+	}
 
-    int find(int v) {
-        if (par[v] == v) {
-            return v;
-        }
+	int find(int v) {
+		if (par[v] == v) {
+			return v;
+		}
 
-        return par[v] = find(par[v]);
-    }
+		return par[v] = find(par[v]);
+	}
 
-    bool merge(int u, int v) {
-        u = find(u);
-        v = find(v);
-        if (u == v) {
-            return false;
-        }
+	bool merge(int u, int v) {
+		u = find(u);
+		v = find(v);
+		if (u == v) {
+			return false;
+		}
 
-        components_cnt--;
-        if (sz[v] > sz[u]) {
-            par[u] = v;
-            sz[v] += sz[u];
-        } else {
-            par[v] = u;
-            sz[u] += sz[v];
-        }
+		components_cnt--;
+		if (sz[v] > sz[u]) {
+			par[u] = v;
+			sz[v] += sz[u];
+		} else {
+			par[v] = u;
+			sz[u] += sz[v];
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    bool is_connected() {
-        return components_cnt == 1;
-    }
+	bool is_connected() {
+		return components_cnt == 1;
+	}
 };
 
 void solve() {
-    int n; cin >> n;
-    DSU dsu = DSU(n);
+	int n; cin >> n;
+	DSU dsu = DSU(n);
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

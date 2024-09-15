@@ -26,57 +26,57 @@ const ld  PI  = 3.14159265358979323846;
 
 struct Node {
 	int sum, pref, suff, ans;
-    bool need_push;
-    int lazy;
-    Node() {
-        this->sum = this->pref = this->suff = this->ans = 0;
-        this->need_push = false;
-        this->lazy = 0;
-    }
+	bool need_push;
+	int lazy;
+	Node() {
+		this->sum = this->pref = this->suff = this->ans = 0;
+		this->need_push = false;
+		this->lazy = 0;
+	}
 	Node(int value) {
-        this->sum = value;
-        this->pref = this->suff = this->ans = max(0, value);
-        this->need_push = false;
-        this->lazy = 0;
-    }
+		this->sum = value;
+		this->pref = this->suff = this->ans = max(0, value);
+		this->need_push = false;
+		this->lazy = 0;
+	}
 };
 
 template<typename N>
 struct Summer {
 	static N merge(N n1, N n2) {
-        N r;
-        r.sum = n1.sum + n2.sum;
-        r.pref = max (n1.pref, n1.sum + n2.pref);
-        r.suff = max (n2.suff, n2.sum + n1.suff);
-        r.ans = max (max (n1.ans, n2.ans), n1.suff + n2.pref);
+		N r;
+		r.sum = n1.sum + n2.sum;
+		r.pref = max (n1.pref, n1.sum + n2.pref);
+		r.suff = max (n2.suff, n2.sum + n1.suff);
+		r.ans = max (max (n1.ans, n2.ans), n1.suff + n2.pref);
 		return r;
 	}
 };
 
 template<typename N, typename M>
 struct SegTreePush {
-    int n;
-    vt<N> tree;
-    SegTreePush() {}
+	int n;
+	vt<N> tree;
+	SegTreePush() {}
 
-    SegTreePush(int n) {
-        this->n = n;
-        this->tree = vt<N> (n << 2);
-    }
+	SegTreePush(int n) {
+		this->n = n;
+		this->tree = vt<N> (n << 2);
+	}
 
-    void push_to_node(int x, int lx, int rx, int k) {
-        tree[x].sum = (rx - lx + 1) * k;
-        tree[x].pref = tree[x].suff = tree[x].ans = std::max(tree[x].sum, 0);
-        tree[x].lazy = k, tree[x].need_push = true;
-    }
+	void push_to_node(int x, int lx, int rx, int k) {
+		tree[x].sum = (rx - lx + 1) * k;
+		tree[x].pref = tree[x].suff = tree[x].ans = std::max(tree[x].sum, 0);
+		tree[x].lazy = k, tree[x].need_push = true;
+	}
 
-    void push_to_childs(int x, int lx, int rx) {
-        if(!tree[x].need_push) return;
-        int mx = (lx + rx) >> 1;
-        push_to_node(ls(x), lx, mx, tree[x].lazy);
-        push_to_node(rs(x), mx+1, rx, tree[x].lazy);
-        tree[x].lazy = 0, tree[x].need_push = false;
-    }
+	void push_to_childs(int x, int lx, int rx) {
+		if(!tree[x].need_push) return;
+		int mx = (lx + rx) >> 1;
+		push_to_node(ls(x), lx, mx, tree[x].lazy);
+		push_to_node(rs(x), mx+1, rx, tree[x].lazy);
+		tree[x].lazy = 0, tree[x].need_push = false;
+	}
 
 	N _get(int x, int lx, int rx, int l, int r) {
 		if (l == lx && rx == r) {
@@ -87,52 +87,52 @@ struct SegTreePush {
 
 		int mx = (lx + rx) >> 1;
 
-        if (r <= mx) {
-            return _get(ls(x), lx, mx, l, r);
-        }
-        if (l > mx) {
-            return _get(rs(x), mx + 1, rx, l, r);
-        }
+		if (r <= mx) {
+			return _get(ls(x), lx, mx, l, r);
+		}
+		if (l > mx) {
+			return _get(rs(x), mx + 1, rx, l, r);
+		}
 
 		return M::merge(_get(ls(x), lx, mx, l, mx),
 			_get(rs(x), mx + 1, rx, mx + 1, r));
 	}
 
-    N get(int l, int r) {
-        return _get(0, 0, n - 1, l, r);
-    }
+	N get(int l, int r) {
+		return _get(0, 0, n - 1, l, r);
+	}
 
 	void _update(int x, int lx, int rx, int l, int r, N & val) {
-        if (r < lx || rx < l) {
-            return;
-        }
-        
-        if (l == lx && rx == r) {
-            push_to_node(x, lx, rx, val.sum);
-            return;
-        }
-        
-        push_to_childs(x, lx, rx);
+		if (r < lx || rx < l) {
+			return;
+		}
+		
+		if (l == lx && rx == r) {
+			push_to_node(x, lx, rx, val.sum);
+			return;
+		}
+		
+		push_to_childs(x, lx, rx);
 
-        int mx = (lx + rx) >> 1;
-        
-        _update(ls(x), lx, mx, l, min(r, mx), val);
-        _update(rs(x), mx + 1, rx, max(l, mx + 1), r, val);
+		int mx = (lx + rx) >> 1;
+		
+		_update(ls(x), lx, mx, l, min(r, mx), val);
+		_update(rs(x), mx + 1, rx, max(l, mx + 1), r, val);
 
-        tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
-    }
+		tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
+	}
 
-    void update(int l, int r, N & val) {
-        _update(0, 0, n - 1, l, r, val);
-    }
+	void update(int l, int r, N & val) {
+		_update(0, 0, n - 1, l, r, val);
+	}
 };
 
 void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

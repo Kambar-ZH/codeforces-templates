@@ -25,62 +25,62 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct floyd {
-    int n;
-    vt<vt<int> > g, p;
-    
-    floyd(vt<vt<int> > g) {
-        this->n = g.size();
-        this->g = g;
-        this->p = vt<vt<int> > (n, vt<int> (n, -1));
-    }
+	int n;
+	vt<vt<int> > g, p;
+	
+	floyd(vt<vt<int> > g) {
+		this->n = g.size();
+		this->g = g;
+		this->p = vt<vt<int> > (n, vt<int> (n, -1));
+	}
 
-    vt<vt<int> > build() {
-        int n = g.size();
+	vt<vt<int> > build() {
+		int n = g.size();
 
-        for (int k = 0; k < n; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (i == j) continue;
-                    int edge = g[i][k] + g[k][j];
-                    if (g[i][j] > edge) {
-                        g[i][j] = edge;
-                        p[i][j] = k;
-                    }
-                }
-            }
-        }
+		for (int k = 0; k < n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (i == j) continue;
+					int edge = g[i][k] + g[k][j];
+					if (g[i][j] > edge) {
+						g[i][j] = edge;
+						p[i][j] = k;
+					}
+				}
+			}
+		}
 
-        return g;
-    }
+		return g;
+	}
 
-    void get_path(int i, int j, vt<int> & path) {
-        if (p[i][j] == -1) {
-            path.push_back(j);
-            return;
-        }
-        get_path(i, p[i][j], path);
-        get_path(p[i][j], j, path);
-    }
+	void get_path(int i, int j, vt<int> & path) {
+		if (p[i][j] == -1) {
+			path.push_back(j);
+			return;
+		}
+		get_path(i, p[i][j], path);
+		get_path(p[i][j], j, path);
+	}
 
-    vt<int> get_path(int i, int j) {
-        vt<int> path = {i};
-        get_path(i, j, path);
+	vt<int> get_path(int i, int j) {
+		vt<int> path = {i};
+		get_path(i, j, path);
 
-        return path;
-    }
+		return path;
+	}
 };
 
 void solve() {
-    int n; cin >> n;
-    vt<vt<int> > g(n, vt<int> (n));
-    read2(g);
+	int n; cin >> n;
+	vt<vt<int> > g(n, vt<int> (n));
+	read2(g);
 
-    floyd f = floyd(g);
-    f.build();
+	floyd f = floyd(g);
+	f.build();
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

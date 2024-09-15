@@ -35,33 +35,33 @@ struct Maxer {
 template<typename N, typename M>
 struct SparseTable
 {
-    int n;
+	int n;
 	vt<vt<N> > dp;
 	vt<int> prec_lg2;
 
 	SparseTable(vector<N> &a) {
-        this->n = a.size();
-        dp = vt<vt<N> > (n, vt<N> (log2(n) + 1));
-        prec_lg2 = vt<int> (n + 1);
-        init(a);
-    }
+		this->n = a.size();
+		dp = vt<vt<N> > (n, vt<N> (log2(n) + 1));
+		prec_lg2 = vt<int> (n + 1);
+		init(a);
+	}
 
 	void init(vector<N> &a) {
 		for(int i = 2; i <= n; i++) {
-            prec_lg2[i] = prec_lg2[i >> 1] + 1;
-        }
+			prec_lg2[i] = prec_lg2[i >> 1] + 1;
+		}
 		for(int i = 0; i < n; i++) {
-            dp[i][0] = a[i];
-        }
+			dp[i][0] = a[i];
+		}
 		for(int j = 1; (1 << j) <= n; j++) {
 			for(int i = 0; i < n; i++) {
 				dp[i][j] = dp[i][j - 1];
-                int shift = i + (1 << (j - 1));
-                if (shift < n) {
-				    dp[i][j] = M::merge(dp[i][j - 1], dp[shift][j - 1]);
-                }
-            }
-        }
+				int shift = i + (1 << (j - 1));
+				if (shift < n) {
+					dp[i][j] = M::merge(dp[i][j - 1], dp[shift][j - 1]);
+				}
+			}
+		}
 	}
 
 	N get(int l, int r) {
@@ -71,13 +71,13 @@ struct SparseTable
 };
 
 void solve() {
-    int n; cin >> n;
+	int n; cin >> n;
 	vt<int> a(n); read(a);
-    auto tree = SparseTable<int, Maxer<int> >(a);
+	auto tree = SparseTable<int, Maxer<int> >(a);
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

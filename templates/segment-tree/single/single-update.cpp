@@ -82,12 +82,12 @@ struct SegTreeSingle {
 
 		int mx = (lx + rx) >> 1;
 
-        if (r <= mx) {
-            return _get(ls(x), lx, mx, l, r);
-        }
-        if (l > mx) {
-            return _get(rs(x), mx + 1, rx, l, r);
-        }
+		if (r <= mx) {
+			return _get(ls(x), lx, mx, l, r);
+		}
+		if (l > mx) {
+			return _get(rs(x), mx + 1, rx, l, r);
+		}
 
 		N lst = _get(ls(x), lx, mx, l, mx);
 		N rst = _get(rs(x), mx + 1, rx, mx + 1, r);
@@ -105,7 +105,7 @@ struct SegTreeSingle {
 		}
 
 		if (lx == rx) {
-            tree[x] = v;
+			tree[x] = v;
 			return;
 		}
 
@@ -117,7 +117,7 @@ struct SegTreeSingle {
 		tree[x] = M::merge(tree[ls(x)], tree[rs(x)]);
 	}
 
-    void update(int id, N v) {
+	void update(int id, N v) {
 		_update(0, 0, n - 1, id, v);
 	}
 };

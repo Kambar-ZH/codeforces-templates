@@ -5,16 +5,16 @@ const long long mod=998244353;
 long long n,Q,l,r,x,t,b[200005],a[800005],add[800005],mul[800005];
 long long pow(long long a,long long b)
 {
-    long long ans=1,base=a;
-    while(b>0)
-    {
-        if(b&1)
-        {
-            ans=(ans*base)%mod;
-        }
-        base=(base*base)%mod;
-        b>>=1;
-    }
+	long long ans=1,base=a;
+	while(b>0)
+	{
+		if(b&1)
+		{
+			ans=(ans*base)%mod;
+		}
+		base=(base*base)%mod;
+		b>>=1;
+	}
 	return ans;
 }
 void build(long long x,long long l,long long r)

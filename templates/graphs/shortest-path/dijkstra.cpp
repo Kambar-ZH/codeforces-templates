@@ -54,7 +54,7 @@ vt<ll> dijkstra(int s, vt<vt<pii> > & g) {
 }
 
 void solve() {
-    int n, m; cin >> n >> m;
+	int n, m; cin >> n >> m;
 	int s, f; cin >> s >> f; s--, f--;
 	vt<vt<pii> > g(n); 
 	For(i, m) {
@@ -62,8 +62,8 @@ void solve() {
 		g[u].push_back({v, d});
 		g[v].push_back({u, d});
 	}
-    vt<ll> dist = dijkstra(0, g);
-    cout << dist[f] << endl;
+	vt<ll> dist = dijkstra(0, g);
+	cout << dist[f] << endl;
 }
 
 int main() {

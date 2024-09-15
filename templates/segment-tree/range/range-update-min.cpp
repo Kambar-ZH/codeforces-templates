@@ -30,7 +30,7 @@ struct SegTreePush {
 	int n;
 	vt<int> lazy, tree;
 
-    SegTreePush() {}
+	SegTreePush() {}
 
 	SegTreePush(int n) {
 		this->n = n;
@@ -39,14 +39,14 @@ struct SegTreePush {
 	}
 
 	void push(int x, int lx, int rx) {
-        if (lazy[x] == NO_PUSH) return;
-        if (lx != rx) {
-            lazy[ls(x)] = lazy[x];
-            lazy[rs(x)] = lazy[x];
-        }
-        tree[x] = lazy[x];
+		if (lazy[x] == NO_PUSH) return;
+		if (lx != rx) {
+			lazy[ls(x)] = lazy[x];
+			lazy[rs(x)] = lazy[x];
+		}
+		tree[x] = lazy[x];
 		lazy[x] = NO_PUSH;
-    }
+	}
 
 	ll _get(int x, int lx, int rx, int l, int r) {
 		push(x, lx, rx);
@@ -57,55 +57,55 @@ struct SegTreePush {
 
 		int mx = (lx + rx) >> 1;
 
-        if (r <= mx) {
-            return _get(ls(x), lx, mx, l, r);
-        }
-        if (l > mx) {
-            return _get(rs(x), mx + 1, rx, l, r);
-        }
+		if (r <= mx) {
+			return _get(ls(x), lx, mx, l, r);
+		}
+		if (l > mx) {
+			return _get(rs(x), mx + 1, rx, l, r);
+		}
 
 		return min(_get(ls(x), lx, mx, l, mx),
 			_get(rs(x), mx + 1, rx, mx + 1, r));
 	}
 
-    ll get(int l, int r) {
-        return _get(0, 0, n - 1, l, r);
-    }
+	ll get(int l, int r) {
+		return _get(0, 0, n - 1, l, r);
+	}
 
 	void _update(int x, int lx, int rx, int l, int r, int value) {
-        if (r < lx || rx < l) {
-            return;
-        }
-        
-        if (l == lx && rx == r) {
-            lazy[x] = value;
-            push(x, lx, rx);
-            return;
-        }
-        
-        push(x, lx, rx);
+		if (r < lx || rx < l) {
+			return;
+		}
+		
+		if (l == lx && rx == r) {
+			lazy[x] = value;
+			push(x, lx, rx);
+			return;
+		}
+		
+		push(x, lx, rx);
 
-        int mx = (lx + rx) >> 1;
-        
-        _update(ls(x), lx, mx, l, min(r, mx), value);
-        _update(rs(x), mx + 1, rx, max(l, mx + 1), r, value);
+		int mx = (lx + rx) >> 1;
+		
+		_update(ls(x), lx, mx, l, min(r, mx), value);
+		_update(rs(x), mx + 1, rx, max(l, mx + 1), r, value);
 
-        tree[x] = min(tree[ls(x)], tree[rs(x)]);
-    }
+		tree[x] = min(tree[ls(x)], tree[rs(x)]);
+	}
 
-    void update(int l, int r, int value) {
-        _update(0, 0, n - 1, l, r, value);
-    }
+	void update(int l, int r, int value) {
+		_update(0, 0, n - 1, l, r, value);
+	}
 };
 
 void solve()
 {
-    int n; cin >> n;
-    SegTreePush tree = SegTreePush(n);
+	int n; cin >> n;
+	SegTreePush tree = SegTreePush(n);
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

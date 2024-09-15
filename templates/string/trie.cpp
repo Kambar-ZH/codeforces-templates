@@ -35,7 +35,7 @@ ris << "(" << d.first << ", " << d.second << ")";
 sim dor(rge<c> d) {
 *this << "[";
 for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
+	*this << ", " + 2 * (it == d.b) << *it;
 ris << "]";
 }
 #else
@@ -59,7 +59,7 @@ const int N = 1e6 + 10, K = 26;
 
 struct Vertex {
 	vt<int> next;
-    int count = 0;
+	int count = 0;
 };
 
 struct Trie {
@@ -76,11 +76,11 @@ struct Trie {
 		for (int i = 0; i < s.length(); i++) {
 			char c = s[i]-'a';
 			if (t[v].next[c] == -1) {
-                t[ver_count].next = vt<int> (K, -1);
+				t[ver_count].next = vt<int> (K, -1);
 				t[v].next[c] = ver_count++;
 			}
 			v = t[v].next[c];
-            t[v].count++;
+			t[v].count++;
 		}
 	}
 
@@ -92,60 +92,60 @@ struct Trie {
 			// assert(t[v].next[c] != -1);
 			
 			if (t[v].next[c] == -1) {
-                t[ver_count].next = vt<int> (K, -1);
+				t[ver_count].next = vt<int> (K, -1);
 				t[v].next[c] = ver_count++;
 			}
 			v = t[v].next[c];
-            t[v].count--;
+			t[v].count--;
 		}
 	}
 
-    ll get(string s) {
+	ll get(string s) {
 		int v = 0;
-        ll ans = 0;
+		ll ans = 0;
 		for (int i = 0; i < s.length(); i++) {
 			char c = s[i]-'a';
 			if (t[v].next[c] == -1) {
-                break;
+				break;
 			}
 			v = t[v].next[c];
-            ans += t[v].count;
+			ans += t[v].count;
 		}
-        return ans;
+		return ans;
 	}
 };
 
 void solve() {
-    int n; cin >> n;
-    ll sum = 0;
+	int n; cin >> n;
+	ll sum = 0;
 	Trie tr = Trie();
-    vt<string> a(n);
+	vt<string> a(n);
 	For(i, n) {
-        string s; cin >> s;
-        a[i] = s;
-        sum += s.length();
-        reverse(all(s));
+		string s; cin >> s;
+		a[i] = s;
+		sum += s.length();
+		reverse(all(s));
 		tr.add(s);
 	}
 
-    ll ans = sum * n;
+	ll ans = sum * n;
 
-    For(i, n) {
-        ans -= tr.get(a[i]);
-    }
-    cout << 2 * ans << endl;
+	For(i, n) {
+		ans -= tr.get(a[i]);
+	}
+	cout << 2 * ans << endl;
 }
 
 // THE SOLUTION IS ALWAYS SIMPLE
 // THE CODE IS ALWAYS SHORT
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 #ifdef DEBUG
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	freopen("input.txt", "r", stdin);
 #endif
-    int T = 1;
-    For(t, T) solve();
-    return 0;
+	int T = 1;
+	For(t, T) solve();
+	return 0;
 }

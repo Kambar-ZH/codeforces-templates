@@ -36,7 +36,7 @@ ris << "(" << d.first << ", " << d.second << ")";
 sim dor(rge<c> d) {
 *this << "[";
 for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
+	*this << ", " + 2 * (it == d.b) << *it;
 ris << "]";
 }
 #else
@@ -55,38 +55,38 @@ const ld  PI  = 3.14159265358979323846;
  
 template<typename T>
 void read(vt<T> & a) {
-    For(i, a.size()) cin >> a[i];
+	For(i, a.size()) cin >> a[i];
 }
 template<typename T>
 void print(vt<T> & a) {
-    For(i, a.size()) cout << a[i] << " ";
-    cout << endl;
+	For(i, a.size()) cout << a[i] << " ";
+	cout << endl;
 }
 template<typename T>
 void print2(vt<vt<T> > & a) {
-    For(i, a.size()) {
-        For(j, a[i].size()) cout << a[i][j] << " ";
-        cout << endl;
-    }
+	For(i, a.size()) {
+		For(j, a[i].size()) cout << a[i][j] << " ";
+		cout << endl;
+	}
 }
 template<typename T>
 void read2(vt<vt<T> > & a) {
-    For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
+	For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
 
 struct node {
-    node *left, *right;
-    int val;
-    node(int val) {
-        this->val = val;
-        this->left = nullptr;
-        this->right = nullptr;
-    }
-    node() {
-        this->val = 0;   
-        this->left = nullptr;
-        this->right = nullptr;
-    }
+	node *left, *right;
+	int val;
+	node(int val) {
+		this->val = val;
+		this->left = nullptr;
+		this->right = nullptr;
+	}
+	node() {
+		this->val = 0;   
+		this->left = nullptr;
+		this->right = nullptr;
+	}
 };
 
 const int N = 2e5;
@@ -94,108 +94,108 @@ int n, m;
 vt<node*> versions(N);
 
 void _build(node *x, int lx, int rx) {
-    if (lx == rx) {
-        return;
-    }
-    x->left = new node();
-    x->right = new node();
-    int mx = (lx + rx) >> 1;
-    _build(x->left, lx, mx);
-    _build(x->right, mx + 1, rx);
+	if (lx == rx) {
+		return;
+	}
+	x->left = new node();
+	x->right = new node();
+	int mx = (lx + rx) >> 1;
+	_build(x->left, lx, mx);
+	_build(x->right, mx + 1, rx);
 }
 
 void build(node *x) {
-    return _build(x, 0, n - 1);
+	return _build(x, 0, n - 1);
 }
 
 node* _update(node *cur, node *prev, int lx, int rx, int id, int v) {
-    if (lx == rx) {
-        cur = new node(v);
-        return cur;
-    }
-    int mx = (lx + rx) >> 1;
+	if (lx == rx) {
+		cur = new node(v);
+		return cur;
+	}
+	int mx = (lx + rx) >> 1;
 
-    if (id <= mx) {
-        cur->right = prev->right;
-        cur->left = _update(new node(), prev->left, lx, mx, id, v);
-    } else {
-        cur->left = prev->left;
-        cur->right = _update(new node(), prev->right, mx + 1, rx, id, v);
-    }
-    // debug() << imie(cur->left->val) << imie(cur->right->val);
-    cur->val = cur->left->val + cur->right->val;
-    return cur;
+	if (id <= mx) {
+		cur->right = prev->right;
+		cur->left = _update(new node(), prev->left, lx, mx, id, v);
+	} else {
+		cur->left = prev->left;
+		cur->right = _update(new node(), prev->right, mx + 1, rx, id, v);
+	}
+	// debug() << imie(cur->left->val) << imie(cur->right->val);
+	cur->val = cur->left->val + cur->right->val;
+	return cur;
 }
 
 node* update(node *cur, node *prev, int id, int v) {
-    return _update(cur, prev, 0, n - 1, id, v);
+	return _update(cur, prev, 0, n - 1, id, v);
 }
  
 int _sum(node *x, int lx, int rx, int l, int r) {
-    // debug() << imie(lx) << imie(rx) << imie(x);
-    if (x == nullptr) {
-        return 0;
-    }
-    if (r < lx || rx < l) {
-        return 0;
-    }
-    if (l <= lx && rx <= r) {
-        return x->val;
-    }
-    int mx = (lx + rx) >> 1;
-    int left_subtree = _sum(x->left, lx, mx, l, r);
-    int right_subtree = _sum(x->right, mx + 1, rx, l, r);
-    return left_subtree + right_subtree;
+	// debug() << imie(lx) << imie(rx) << imie(x);
+	if (x == nullptr) {
+		return 0;
+	}
+	if (r < lx || rx < l) {
+		return 0;
+	}
+	if (l <= lx && rx <= r) {
+		return x->val;
+	}
+	int mx = (lx + rx) >> 1;
+	int left_subtree = _sum(x->left, lx, mx, l, r);
+	int right_subtree = _sum(x->right, mx + 1, rx, l, r);
+	return left_subtree + right_subtree;
 }
 
 int sum(node *x, int l, int r) {
-    return _sum(x, 0, n - 1, l, r);
+	return _sum(x, 0, n - 1, l, r);
 }
  
 void solve()
 {
-    cin >> n >> m;
-    versions[0] = new node();
-    build(versions[0]);
-    vt<int> a(n); read(a);
-    vt<pii> order(n);
-    For(i, n) {
-        order[i] = {a[i], i};
-    }
-    sort(all(order));
-    vt<int> link(n + 1);
-    For(i, n) {
-        versions[i+1] = update(new node(), versions[i], order[i].second, 1);
-        link[i+1] = order[i].second;
-    }
-    For(q, m) {
-        int i, j, k; cin >> i >> j >> k; i--, j--;
-        int l = 0, r = n, m;
-        while (l < r) {
-            m = (l + r) >> 1;
-            int range = sum(versions[m], i, j);
-            if (range < k) {
-                l = m + 1;
-            } else {
-                r = m;
-            }
-        }
-        cout << a[link[l]] << endl;
-    }
+	cin >> n >> m;
+	versions[0] = new node();
+	build(versions[0]);
+	vt<int> a(n); read(a);
+	vt<pii> order(n);
+	For(i, n) {
+		order[i] = {a[i], i};
+	}
+	sort(all(order));
+	vt<int> link(n + 1);
+	For(i, n) {
+		versions[i+1] = update(new node(), versions[i], order[i].second, 1);
+		link[i+1] = order[i].second;
+	}
+	For(q, m) {
+		int i, j, k; cin >> i >> j >> k; i--, j--;
+		int l = 0, r = n, m;
+		while (l < r) {
+			m = (l + r) >> 1;
+			int range = sum(versions[m], i, j);
+			if (range < k) {
+				l = m + 1;
+			} else {
+				r = m;
+			}
+		}
+		cout << a[link[l]] << endl;
+	}
 }
 
 void precalc() { }
 
 int main()
 {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 #ifdef DEBUG
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	freopen("input.txt", "r", stdin);
 #endif
-    int T;
-    T = 1;
-    precalc();
-    For(t, T) solve();
-    return 0;
+	int T;
+	T = 1;
+	precalc();
+	For(t, T) solve();
+	return 0;
 }

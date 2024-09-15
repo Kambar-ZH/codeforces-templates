@@ -98,9 +98,9 @@ struct trie {
 
 			while (!visited[tmp]) {
 				visited[tmp] = true;
-                for (int x : t[tmp].leaf) {
-                    found[x] = true;
-                }
+				for (int x : t[tmp].leaf) {
+					found[x] = true;
+				}
 				tmp = get_link(tmp);
 			}
 		}
@@ -186,9 +186,9 @@ struct trie {
 
 		vt<pii> ans(strs.size(), {-1, -1});
 		function<pair<int, int>(int)> dp = [&] (int v) -> pair<int, int> {
-            pii result = {-1, -1};
+			pii result = {-1, -1};
 			for (int u : gr[v]) {
-                auto ch = dp(u);
+				auto ch = dp(u);
 				if (ch.first != -1) {
 					if (result.first == -1) {
 						result.first = ch.first;
@@ -196,24 +196,24 @@ struct trie {
 						result.first = min(result.first, ch.first);
 					}
 				}
-                result.second = max(result.second, ch.second);
+				result.second = max(result.second, ch.second);
 			}
 			
 			for (int x : node[v]) {
-                if (result.first == -1) {
-                    result.first = x;
-                } else {
-				    result.first = min(result.first, x);
-                }
+				if (result.first == -1) {
+					result.first = x;
+				} else {
+					result.first = min(result.first, x);
+				}
 				result.second = max(result.second, x);
 			}
 
-            if (result.first != -1) {
-                for (int x : t[v].leaf) {
-                    ans[x].first = result.first - (strs[x].length() - 1);
-                    ans[x].second = result.second - (strs[x].length() - 1);
-                }
-            }
+			if (result.first != -1) {
+				for (int x : t[v].leaf) {
+					ans[x].first = result.first - (strs[x].length() - 1);
+					ans[x].second = result.second - (strs[x].length() - 1);
+				}
+			}
 
 			return result;
 		};

@@ -28,18 +28,18 @@ const int W = 2e5 + 1;
 bitset<W> dp;
 
 void solve() {
-    int n, w; cin >> n >> w;
-    dp[0] = 1;
-    For(i, n) {
-        int x; cin >> x;
-        dp |= (dp << x);
-    }
-    assert(w < W);
-    cout << dp[w] << endl;
+	int n, w; cin >> n >> w;
+	dp[0] = 1;
+	For(i, n) {
+		int x; cin >> x;
+		dp |= (dp << x);
+	}
+	assert(w < W);
+	cout << dp[w] << endl;
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

@@ -25,48 +25,48 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct EulerDetour {
-    vt<int> sz, tin, tout, ver;
-    vt<int> par, val;
-    vt<vt<pii> > *g;
-    
-    EulerDetour(
-        int n,
-        vt<vt<pii> > *g
-    ) {
-        this->g = g;
-        this->sz.resize(n);
-        this->tin.resize(n);
-        this->tout.resize(n);
-        this->par = vt<int> (n, -1);
-        this->val.resize(n);
-        this->precalc();
-    }
+	vt<int> sz, tin, tout, ver;
+	vt<int> par, val;
+	vt<vt<pii> > *g;
+	
+	EulerDetour(
+		int n,
+		vt<vt<pii> > *g
+	) {
+		this->g = g;
+		this->sz.resize(n);
+		this->tin.resize(n);
+		this->tout.resize(n);
+		this->par = vt<int> (n, -1);
+		this->val.resize(n);
+		this->precalc();
+	}
 
-    void _precalc(int u, int p) {
-        sz[u] = 1;
-        ver.push_back(u);
-        tin[u] = ver.size() - 1;
-        for (auto [v, c] : (*g)[u]) {
-            if (v == p) continue;
-            _precalc(v, u);
-            sz[u] += sz[v];
-            par[v] = u;
-            val[v] = c;
-        }
-        tout[u] = ver.size() - 1;
-    }
+	void _precalc(int u, int p) {
+		sz[u] = 1;
+		ver.push_back(u);
+		tin[u] = ver.size() - 1;
+		for (auto [v, c] : (*g)[u]) {
+			if (v == p) continue;
+			_precalc(v, u);
+			sz[u] += sz[v];
+			par[v] = u;
+			val[v] = c;
+		}
+		tout[u] = ver.size() - 1;
+	}
 
-    void precalc() {
-        _precalc(0, -1);
-    }
+	void precalc() {
+		_precalc(0, -1);
+	}
 };
 
 void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

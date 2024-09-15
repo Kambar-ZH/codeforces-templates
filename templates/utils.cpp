@@ -35,7 +35,7 @@ ris << "(" << d.first << ", " << d.second << ")";
 sim dor(rge<c> d) {
 *this << "[";
 for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
+	*this << ", " + 2 * (it == d.b) << *it;
 ris << "]";
 }
 #else
@@ -56,12 +56,12 @@ const ld  PI  = 3.14159265358979323846;
 
 template<typename T>
 vt<T> unique(vt<T> vec) {
-    unordered_set<T> s;
-    for (T i : vec)
-        s.insert(i);
-    vec.assign( s.begin(), s.end() );
-    sort( vec.begin(), vec.end() );
-    return vec;
+	unordered_set<T> s;
+	for (T i : vec)
+		s.insert(i);
+	vec.assign( s.begin(), s.end() );
+	sort( vec.begin(), vec.end() );
+	return vec;
 } 
 
 template<typename T>
@@ -75,62 +75,62 @@ vt<vt<T> > transpose(vt<vt<T> > b) {
 template<typename T>
 vt<vt<T> > generate_permutations(vt<T> a) {
 	vt<T> init = a;
-    vt<vt<T> > perms;
-    while (true) {
-        next_permutation(all(a));
-        perms.push_back(a);
-        if (a == init) break;
-    }
-    return perms;
+	vt<vt<T> > perms;
+	while (true) {
+		next_permutation(all(a));
+		perms.push_back(a);
+		if (a == init) break;
+	}
+	return perms;
 }
 
 ostream& operator<<(ostream& o, const __int128& x) {
-    if (x == numeric_limits<__int128>::min()) return o << "-170141183460469231731687303715884105728";
-    if (x < 0) return o << "-" << -x;
-    if (x < 10) return o << (char)(x + '0');
-    return o << x / 10 << (char)(x % 10 + '0');
+	if (x == numeric_limits<__int128>::min()) return o << "-170141183460469231731687303715884105728";
+	if (x < 0) return o << "-" << -x;
+	if (x < 10) return o << (char)(x + '0');
+	return o << x / 10 << (char)(x % 10 + '0');
 }
 
 vt<string> split(string str, char sep) {
-    vt<string> result;
-    string cur = "";
-    int i = 0;
-    while (i != str.length()) {
-        if (str[i] != sep) {
-            cur += str[i]; 
-        } else {
-            result.push_back(cur);
-            cur.clear();
-        }
-        i++;
-    }
-    result.push_back(cur);
-    return result;
+	vt<string> result;
+	string cur = "";
+	int i = 0;
+	while (i != str.length()) {
+		if (str[i] != sep) {
+			cur += str[i]; 
+		} else {
+			result.push_back(cur);
+			cur.clear();
+		}
+		i++;
+	}
+	result.push_back(cur);
+	return result;
 }
 
 set<int> to_set(vector<int> & a) {
-    // more optimized method which moves each element into a set instead of copying each element
+	// more optimized method which moves each element into a set instead of copying each element
 	return set<int> (
-        make_move_iterator(a.begin()), 
-        make_move_iterator(a.end())
-    );
+		make_move_iterator(a.begin()), 
+		make_move_iterator(a.end())
+	);
 }
 
 void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 #ifdef DEBUG
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	freopen("input.txt", "r", stdin);
 #endif
-    srand( time(NULL) );
-    cout << setprecision(20) << fixed;
-    int T = 1;
-    clock_t start = clock();
-    For(t, T) solve();
-    printf("Time taken: %.2fs\n", (double)(clock() - start)/CLOCKS_PER_SEC);
-    return 0;
+	srand( time(NULL) );
+	cout << setprecision(20) << fixed;
+	int T = 1;
+	clock_t start = clock();
+	For(t, T) solve();
+	printf("Time taken: %.2fs\n", (double)(clock() - start)/CLOCKS_PER_SEC);
+	return 0;
 }

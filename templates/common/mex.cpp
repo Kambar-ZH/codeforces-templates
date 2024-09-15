@@ -25,113 +25,113 @@ const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
 struct DynamicMex {
-    int N;
-    set<int> st;
+	int N;
+	set<int> st;
 
-    DynamicMex() {}
-    
-    DynamicMex(int N) {
-        this->N = N;
-        this->fill();
-    }
-    
-    void fill() {
-        for (int i = 0; i <= N + 1; i++) {
-            st.insert(i);
-        }
-    }
-    
-    int mex() {
-        return *st.begin();
-    }
-    
-    void remove(int x) {
-        if (x > N) return;
-        st.insert(x);
-    }
+	DynamicMex() {}
+	
+	DynamicMex(int N) {
+		this->N = N;
+		this->fill();
+	}
+	
+	void fill() {
+		for (int i = 0; i <= N + 1; i++) {
+			st.insert(i);
+		}
+	}
+	
+	int mex() {
+		return *st.begin();
+	}
+	
+	void remove(int x) {
+		if (x > N) return;
+		st.insert(x);
+	}
 
-    // can't add same x more than once
-    void add(int x) {
-        if (x > N || st.count(x) == 0) return;
-        st.erase(x);
-    }
+	// can't add same x more than once
+	void add(int x) {
+		if (x > N || st.count(x) == 0) return;
+		st.erase(x);
+	}
 };
 
 struct MultiDynamicMex {
-    int N;
-    set<int> st;
-    unordered_map<int, int> cnt;
+	int N;
+	set<int> st;
+	unordered_map<int, int> cnt;
 
-    MultiDynamicMex() {}
-    
-    MultiDynamicMex(int N) {
-        this->N = N;
-        this->fill();
-    }
-    
-    void fill() {
-        for (int i = 0; i <= N + 1; i++) {
-            st.insert(i);
-        }
-    }
-    
-    int mex() {
-        return *st.begin();
-    }
-    
-    void remove(int x) {
-        if (x > N || cnt[x] == 0 || (cnt[x]-=1) != 0) return;
-        st.insert(x);
-    }
+	MultiDynamicMex() {}
+	
+	MultiDynamicMex(int N) {
+		this->N = N;
+		this->fill();
+	}
+	
+	void fill() {
+		for (int i = 0; i <= N + 1; i++) {
+			st.insert(i);
+		}
+	}
+	
+	int mex() {
+		return *st.begin();
+	}
+	
+	void remove(int x) {
+		if (x > N || cnt[x] == 0 || (cnt[x]-=1) != 0) return;
+		st.insert(x);
+	}
 
-    void add(int x) {
-        if (x > N) return;
-        cnt[x]++;
-        if (st.count(x) == 0) return;
-        st.erase(x);
-    }
+	void add(int x) {
+		if (x > N) return;
+		cnt[x]++;
+		if (st.count(x) == 0) return;
+		st.erase(x);
+	}
 };
 
 struct StaticMex {
-    int N;
-    vt<bool> used;
+	int N;
+	vt<bool> used;
 
 	StaticMex() {}
-    
-    StaticMex(int N) {
-        this->N = N;
-        this->used.assign(N + 1, false);
-    }
+	
+	StaticMex(int N) {
+		this->N = N;
+		this->used.assign(N + 1, false);
+	}
 
-    int mex(const vector<int> & a) {
-        int n = a.size();
-        for (int i = 0; i < n; i++) {
-            if (a[i] <= N) {
-                used[a[i]] = true;
-            }
-        }
-        int result = -1;
-        for (int i = 0; ; i++) {
-            if (!used[i]) {
-                result = i;
-                break;
-            }
-        }
-        for (int i = 0 ; i < n; i++) {
-            if (a[i] <= N) {
-                used[a[i]] = false;
-            }
-        }
-        return result;
-    }
+	int mex(const vector<int> & a) {
+		int n = a.size();
+		for (int i = 0; i < n; i++) {
+			if (a[i] <= N) {
+				used[a[i]] = true;
+			}
+		}
+		int result = -1;
+		for (int i = 0; ; i++) {
+			if (!used[i]) {
+				result = i;
+				break;
+			}
+		}
+		for (int i = 0 ; i < n; i++) {
+			if (a[i] <= N) {
+				used[a[i]] = false;
+			}
+		}
+		return result;
+	}
 };
 
 void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

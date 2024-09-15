@@ -40,20 +40,20 @@ vt<int> prefix_function(string s) {
 }
 
 int shortest_period(vt<int> & p) {
-    int n = p.size();
-    int period = n - p[n - 1];
-    if (n % period == 0) {
-        return period;
-    }
-    return n;
+	int n = p.size();
+	int period = n - p[n - 1];
+	if (n % period == 0) {
+		return period;
+	}
+	return n;
 }
 
 void solve() {
-    
+	
 }
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    solve();
-    return 0;
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	solve();
+	return 0;
 }

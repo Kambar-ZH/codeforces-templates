@@ -31,8 +31,8 @@ struct SegTree {
 		this->n = n;
 		tree.resize(4 * n);
 	}
-    
-    void _build(int x, int l, int r) {
+	
+	void _build(int x, int l, int r) {
 		if (l == r) {
 			tree[x] = 1;
 			return;
@@ -43,16 +43,16 @@ struct SegTree {
 		tree[x] = tree[ls(x)] + tree[rs(x)];
 	}
 
-    void build() {
+	void build() {
 		_build(0, 0, n - 1);
 	}
 
-    void _update(int x, int lx, int rx, int l, int r, int v) {
+	void _update(int x, int lx, int rx, int l, int r, int v) {
 		if (r < lx || rx < l) {
 			return;
 		}
 		if (l <= lx && rx <= r) {
-            tree[x] = v;
+			tree[x] = v;
 			return;
 		}
 		int mx = (lx + rx) >> 1;
@@ -61,25 +61,25 @@ struct SegTree {
 		tree[x] = tree[ls(x)] + tree[rs(x)];
 	}
 
-    void update(int l, int v) {
+	void update(int l, int v) {
 		_update(0, 0, n - 1, l, l, v);
 	}
 
 	int _kth_order(int x, int lx, int rx, int k) {
-        if (lx > rx) {
-            return -1;
-        }
+		if (lx > rx) {
+			return -1;
+		}
 		if (lx == rx) {
 			return lx;
 		}
 		int mx = (lx + rx) >> 1;
-        
-        if (k <= tree[ls(x)]) {
-            return _kth_order(ls(x), lx, mx, k);
-        }
-        if (k <= tree[x]) {
-            return _kth_order(rs(x), mx + 1, rx, k - tree[ls(x)]);
-        }
+		
+		if (k <= tree[ls(x)]) {
+			return _kth_order(ls(x), lx, mx, k);
+		}
+		if (k <= tree[x]) {
+			return _kth_order(rs(x), mx + 1, rx, k - tree[ls(x)]);
+		}
 		return -1;
 	}
  

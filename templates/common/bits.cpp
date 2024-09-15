@@ -35,7 +35,7 @@ ris << "(" << d.first << ", " << d.second << ")";
 sim dor(rge<c> d) {
 *this << "[";
 for (auto it = d.b; it != d.e; ++it)
-    *this << ", " + 2 * (it == d.b) << *it;
+	*this << ", " + 2 * (it == d.b) << *it;
 ris << "]";
 }
 #else
@@ -46,23 +46,23 @@ sim dor(const c&) { ris; }
 
 template<typename T>
 void read(vt<T> & a) {
-    For(i, a.size()) cin >> a[i];
+	For(i, a.size()) cin >> a[i];
 }
 template<typename T>
 void print(vt<T> & a) {
-    For(i, a.size()) cout << a[i] << " ";
-    cout << endl;
+	For(i, a.size()) cout << a[i] << " ";
+	cout << endl;
 }
 template<typename T>
 void print2(vt<vt<T> > & a) {
-    For(i, a.size()) {
-        For(j, a[i].size()) cout << a[i][j] << " ";
-        cout << endl;
-    }
+	For(i, a.size()) {
+		For(j, a[i].size()) cout << a[i][j] << " ";
+		cout << endl;
+	}
 }
 template<typename T>
 void read2(vt<vt<T> > & a) {
-    For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
+	For(i, a.size()) For(j, a[i].size()) cin >> a[i][j];
 }
 
 const int MAX = 1e9;
@@ -77,36 +77,36 @@ const ld  PI  = 3.14159265358979323846;
 //        add 1: 1111110010001000
 //      -number: 1111110010001000
 int lowest_bit(ll n) {
-    return log2(n & -n); // same as n & ((1 << 64 - 1) - n + 1)
+	return log2(n & -n); // same as n & ((1 << 64 - 1) - n + 1)
 }
 
 int greatest_bit(ll n) {
-    int k = __builtin_clzll(n);
-    return 63 - k;
+	int k = __builtin_clzll(n);
+	return 63 - k;
 }
 
 bool has_bit(int mask, int bit) {
-    return (mask >> bit) == 1;
+	return (mask >> bit) == 1;
 }
 
 void solve()
 {
-    ll n; cin >> n;
-    cout << lowest_bit(n) << " " << greatest_bit(n) << endl;
+	ll n; cin >> n;
+	cout << lowest_bit(n) << " " << greatest_bit(n) << endl;
 }
 
 void precalc() {}
 
 int main()
 {
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 #ifdef DEBUG
-    freopen("output.txt", "w", stdout);
-    freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	freopen("input.txt", "r", stdin);
 #endif
-    int T;
-    T = 1;
-    precalc();
-    For(t, T) solve();
-    return 0;
+	int T;
+	T = 1;
+	precalc();
+	For(t, T) solve();
+	return 0;
 }
