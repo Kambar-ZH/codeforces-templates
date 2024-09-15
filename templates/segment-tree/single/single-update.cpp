@@ -129,7 +129,7 @@ void solve()
 	For(i, n) {
 		cin >> a[i].value;
 	}
-	SegTreeSingle<Node, Summer<Node>> tree = SegTreeSingle<Node, Summer<Node>>(a);
+	auto tree = SegTreeSingle<Node, Summer<Node>>(a);
 	For(i, m) {
 		int op; cin >> op;
 		if (op == 1) {

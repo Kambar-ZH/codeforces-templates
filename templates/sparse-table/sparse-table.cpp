@@ -73,7 +73,7 @@ struct SparseTable
 void solve() {
     int n; cin >> n;
 	vt<int> a(n); read(a);
-    SparseTable<int, Maxer<int> > tree = SparseTable<int, Maxer<int> >(a);
+    auto tree = SparseTable<int, Maxer<int> >(a);
 }
 
 int main() {

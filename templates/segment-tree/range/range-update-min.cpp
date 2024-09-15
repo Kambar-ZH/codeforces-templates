@@ -24,15 +24,15 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct seg_tree_push {
+struct SegTreePush {
 	const int NO_PUSH = -MAX;
 
 	int n;
 	vt<int> lazy, tree;
 
-    seg_tree_push() {}
+    SegTreePush() {}
 
-	seg_tree_push(int n) {
+	SegTreePush(int n) {
 		this->n = n;
 		tree.resize(4 * n, MAX);
 		lazy.resize(4 * n, NO_PUSH);
@@ -101,7 +101,7 @@ struct seg_tree_push {
 void solve()
 {
     int n; cin >> n;
-    seg_tree_push tree = seg_tree_push(n);
+    SegTreePush tree = SegTreePush(n);
 }
 
 int main() {

@@ -24,10 +24,10 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct seg_tree {
+struct SegTree {
 	int n;
 	vt<int> tree;
-	seg_tree(int n) {
+	SegTree(int n) {
 		this->n = n;
 		tree.resize(4 * n);
 	}
@@ -90,7 +90,7 @@ struct seg_tree {
  
 void solve() {
 	int n; cin >> n;
-	seg_tree tree = seg_tree(n);
+	SegTree tree = SegTree(n);
 	tree.build();
 }
 

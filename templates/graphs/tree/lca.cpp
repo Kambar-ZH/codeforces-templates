@@ -214,7 +214,7 @@ void solve() {
         g[x].push_back(i + 1);
         val[i + 1] = Node(y);
     }
-    LcaTree<Node> t = LcaTree<Node>(val);
+    auto t = LcaTree<Node>(val);
     t.dfs(0, -1, g);
     t.calc_dp_par();
     t.calc_dp_val();

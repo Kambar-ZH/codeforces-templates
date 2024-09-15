@@ -24,16 +24,16 @@ const int MOD = 1000000007;
 const ll  INF = 1e18;
 const ld  PI  = 3.14159265358979323846;
 
-struct node {
+struct Node {
 	int sum, pref, suff, ans;
     bool need_push;
     int lazy;
-    node() {
+    Node() {
         this->sum = this->pref = this->suff = this->ans = 0;
         this->need_push = false;
         this->lazy = 0;
     }
-	node(int value) {
+	Node(int value) {
         this->sum = value;
         this->pref = this->suff = this->ans = max(0, value);
         this->need_push = false;
@@ -42,7 +42,7 @@ struct node {
 };
 
 template<typename N>
-struct summer {
+struct Summer {
 	static N merge(N n1, N n2) {
         N r;
         r.sum = n1.sum + n2.sum;
@@ -54,12 +54,12 @@ struct summer {
 };
 
 template<typename N, typename M>
-struct seg_tree_push {
+struct SegTreePush {
     int n;
     vt<N> tree;
-    seg_tree_push() {}
+    SegTreePush() {}
 
-    seg_tree_push(int n) {
+    SegTreePush(int n) {
         this->n = n;
         this->tree = vt<N> (n << 2);
     }

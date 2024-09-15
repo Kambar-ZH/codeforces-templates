@@ -14,17 +14,17 @@ using namespace std;
 #define vt                  vector
 #define ll                  long long
 
-struct node {
+struct Node {
 	ll sum, pref, suff, ans;
-    node() {}
-	node(ll sum) {
+    Node() {}
+	Node(ll sum) {
         this->sum = sum;
         this->pref = this->suff = this->ans = max(0LL, sum);
     }
 };
 
 template<typename N>
-struct summer {
+struct Summer {
 	static N merge(N & n1, N & n2) {
         N r;
         r.sum = n1.sum + n2.sum;
@@ -36,7 +36,7 @@ struct summer {
 };
 
 template<typename N>
-struct prefixer {
+struct Prefixer {
 	static N merge(N & n1, N & n2) {
         N r;
         r.sum = n1.sum + n2.sum;
@@ -47,7 +47,7 @@ struct prefixer {
 };
 
 template<typename N>
-struct suffixer {
+struct Suffixer {
 	static N merge(N & n1, N & n2) {
         N r;
         r.sum = n1.sum + n2.sum;
