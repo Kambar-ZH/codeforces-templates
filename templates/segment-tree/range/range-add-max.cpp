@@ -96,7 +96,7 @@ struct SegTreePush {
         tree[x] = max(tree[ls(x)], tree[rs(x)]);
     }
 
-    void update(int l, int r, int addend) {
+    void update(int l, int r, ll addend) {
         _update(0, 0, n - 1, l, r, addend);
     }
 };

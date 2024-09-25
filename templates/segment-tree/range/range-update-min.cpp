@@ -38,22 +38,25 @@ struct SegTreePush {
 		lazy.resize(4 * n, NO_PUSH);
 	}
 
-	void push(int x, int lx, int rx) {
-		if (lazy[x] == NO_PUSH) return;
-		if (lx != rx) {
-			lazy[ls(x)] = lazy[x];
-			lazy[rs(x)] = lazy[x];
-		}
-		tree[x] = lazy[x];
-		lazy[x] = NO_PUSH;
-	}
+    void push_to_node(int x, int lx, int rx, ll k) {
+        tree[x] = k;
+        lazy[x] = k;
+    }
+
+    void push_to_childs(int x, int lx, int rx) {
+        if (lazy[x] == NO_PUSH) return;
+        int mx = (lx + rx) >> 1;
+        push_to_node(ls(x), lx, mx, lazy[x]);
+        push_to_node(rs(x), mx+1, rx, lazy[x]);
+        lazy[x] = NO_PUSH;
+    }
 
 	ll _get(int x, int lx, int rx, int l, int r) {
-		push(x, lx, rx);
-
 		if (l == lx && rx == r) {
 			return tree[x];
 		}
+
+		push_to_childs(x, lx, rx);
 
 		int mx = (lx + rx) >> 1;
 
@@ -79,11 +82,11 @@ struct SegTreePush {
 		
 		if (l == lx && rx == r) {
 			lazy[x] = value;
-			push(x, lx, rx);
+			push_to_node(x, lx, rx, value);
 			return;
 		}
 		
-		push(x, lx, rx);
+		push_to_childs(x, lx, rx);
 
 		int mx = (lx + rx) >> 1;
 		
