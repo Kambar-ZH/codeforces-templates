@@ -26,22 +26,23 @@ const ld  PI  = 3.14159265358979323846;
 
 struct floyd {
 	int n;
-	vt<vt<int> > g, p;
+	vt<vt<ll> > g;
+	vt<vt<int> > p;
 	
-	floyd(vt<vt<int> > g) {
+	floyd(vt<vt<ll> > g) {
 		this->n = g.size();
 		this->g = g;
 		this->p = vt<vt<int> > (n, vt<int> (n, -1));
 	}
 
-	vt<vt<int> > build() {
+	void build() {
 		int n = g.size();
 
 		for (int k = 0; k < n; k++) {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					if (i == j) continue;
-					int edge = g[i][k] + g[k][j];
+					ll edge = g[i][k] + g[k][j];
 					if (g[i][j] > edge) {
 						g[i][j] = edge;
 						p[i][j] = k;
@@ -49,8 +50,31 @@ struct floyd {
 				}
 			}
 		}
+	}
 
-		return g;
+	void add_edge(int u, int v, int c) {
+		g[u][v] = c;
+		g[v][u] = c;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i == j) continue;
+				ll edge = g[i][u] + g[u][j];
+				if (g[i][j] > edge) {
+					g[i][j] = edge;
+					p[i][j] = u;
+				}
+			}
+		}
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (i == j) continue;
+				ll edge = g[i][v] + g[v][j];
+				if (g[i][j] > edge) {
+					g[i][j] = edge;
+					p[i][j] = v;
+				}
+			}
+		}
 	}
 
 	void get_path(int i, int j, vt<int> & path) {
@@ -72,7 +96,7 @@ struct floyd {
 
 void solve() {
 	int n; cin >> n;
-	vt<vt<int> > g(n, vt<int> (n));
+	vt<vt<ll> > g(n, vt<ll> (n));
 	read2(g);
 
 	floyd f = floyd(g);
