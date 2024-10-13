@@ -62,7 +62,7 @@ struct dsu_persistent {
 			par[u] = v;
 			++rank[v];
 		}
-		components++;
+		components--;
 		return true;
 	}
 
@@ -70,7 +70,7 @@ struct dsu_persistent {
 		while ((int)hist.size() > back_to) {
 			*hist.back().first = hist.back().second;
 			hist.pop_back();
-			components--;
+			components++;
 		}
 	}
 };
