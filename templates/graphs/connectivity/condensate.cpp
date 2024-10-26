@@ -19,60 +19,82 @@ template<typename T> void read2(vt<vt<T> > & a) {For(i, a.size()) read(a[i]);}
 template<typename T> void print(vt<T> & a) {For(i, a.size()) cout << a[i] << " "; cout << endl;}
 template<typename T> void print2(vt<vt<T> > & a) {For(i, a.size()) print(a[i]);}
 
-struct graph {
-	int n, m, max_color;
-	vt<int> post_order, components;
+namespace TopSort {
+	void dfs(int v, vt<bool> & visited, vt<int> & post_order, vt<vt<int> > & g) {
+		visited[v] = true;
+		for (int u : g[v]) {
+			if (visited[u]) continue;
+			dfs(u, visited, post_order, g);
+		}
+		post_order.push_back(v);
+	}
+
+	vt<int> top_sort(vt<vt<int> > & g) {
+        int n = g.size();
+		vt<int> post_order;
+		vt<bool> visited(n);
+		for (int v = 0; v < n; v++) {
+			if (visited[v]) continue; 
+			dfs(v, visited, post_order, g);
+		}
+        reverse(all(post_order));
+        return post_order;
+	}
+}
+
+struct Graph {
+	int n, max_color;
+	vt<int> vertex_color;
+	vt<vt<int> > components_vertices;
+	vt<vt<int> > condensated_g;
 	vt<vt<int> > g, gr;
 
-	graph(int _n, vt<pii> & _edges) {
+	Graph(int n, vt<pii> & edges) {
 		this->max_color = 0;
-		this->n = _n;
-		this->components.resize(n);
-		this->build_graph(_edges);
+		this->n = n;
+		this->vertex_color = vt<int> (n, -1);
+		this->build_graph(edges);
 	};
 
-	void build_graph(vt<pii> & _edges) {
-		this->g.resize(n);
-		this->gr.resize(n);
-		for (auto & [u, v] : _edges) {
+	void build_graph(vt<pii> & edges) {
+		g.resize(n);
+		gr.resize(n);
+		for (auto & [u, v] : edges) {
 			g[u].push_back(v);
 			gr[v].push_back(u);
 		}
 	}
 
-	void dfs(int v, vt<bool> & visited) {
-		visited[v] = 1;
-		for (int u : g[v]) {
-			if (visited[u]) continue;
-			dfs(u, visited);
-		}
-		post_order.push_back(v);
-	}
-
-	void dfs() {
-		vt<bool> visited(n);
-		for (int v = 0; v < n; v++) {
-			if (visited[v]) continue; 
-			dfs(v, visited);
-		}
-	}
-
-	void condensate(int v, int color, vt<bool> & visited) {
-		visited[v] = 1;
-		components[v] = color;
-		for (int u : gr[v]) {
-			if (visited[u]) continue;
-			condensate(u, color, visited);
-		}
-	}
-
 	void condensate() {
-		dfs();
-		reverse(all(post_order));
+		paint();
+		condensated_g = vt<vt<int> > (max_color);
+		components_vertices = vt<vt<int> > (max_color);
+		for (int u = 0; u < n; u++) {
+			int cu = vertex_color[u];
+			components_vertices[cu].push_back(u);
+			for (int v : g[u]) {
+				int cv = vertex_color[v];
+				if (cu == cv) continue;
+				condensated_g[cu].push_back(cv);
+			}
+		}
+	}
+
+	void paint() {
+		vt<int> post_order = TopSort::top_sort(g);
 		vt<bool> visited(n);
 		for (int v : post_order) {
 			if (visited[v]) continue;
-			condensate(v, ++max_color, visited);
+			paint(v, max_color++, visited);
+		}
+	}
+
+	void paint(int v, int color, vt<bool> & visited) {
+		visited[v] = true;
+		vertex_color[v] = color;
+		for (int u : gr[v]) {
+			if (visited[u]) continue;
+			paint(u, color, visited);
 		}
 	}
 };
@@ -84,10 +106,10 @@ void solve() {
 		int u, v; cin >> u >> v; u--, v--;
 		edges.emplace_back(u, v);
 	}
-	graph gr = graph(n, edges);
+	Graph gr = Graph(n, edges);
 	gr.condensate();
 	
-	print(gr.components);
+	print(gr.vertex_color);
 }
 
 int main() {
