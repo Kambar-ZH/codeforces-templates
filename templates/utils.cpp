@@ -116,6 +116,9 @@ set<int> to_set(vector<int> & a) {
 	);
 }
 
+// by default heap is max heap
+#define min_heap priority_queue<int, vector<int>, greater<int> >;
+
 void solve() {
 	
 }
