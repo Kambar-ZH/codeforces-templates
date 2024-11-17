@@ -86,7 +86,7 @@ int greatest_bit(ll n) {
 }
 
 bool has_bit(int mask, int bit) {
-	return (mask >> bit) == 1;
+	return (mask >> bit) & 1;
 }
 
 void solve()
@@ -94,8 +94,6 @@ void solve()
 	ll n; cin >> n;
 	cout << lowest_bit(n) << " " << greatest_bit(n) << endl;
 }
-
-void precalc() {}
 
 int main()
 {
@@ -106,7 +104,6 @@ int main()
 #endif
 	int T;
 	T = 1;
-	precalc();
 	For(t, T) solve();
 	return 0;
 }
